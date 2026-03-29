@@ -97,10 +97,8 @@ export default function ScrollyCanvas() {
       <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", overflow: "hidden", background: "#0a0f1e" }}>
         <canvas ref={canvasRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "block" }} />
 
-        {/* Subtle gradient for text readability */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.2) 0%, transparent 30%, rgba(10,15,30,0.3) 100%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,15,30,0.15) 0%, transparent 30%, rgba(10,15,30,0.25) 100%)", pointerEvents: "none" }} />
 
-        {/* Loading */}
         {!imagesLoaded && (
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#0a0f1e", zIndex: 50 }}>
             <div style={{ width: 36, height: 36, border: "2px solid rgba(29,184,160,0.3)", borderTopColor: "#1db8a0", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
@@ -109,48 +107,57 @@ export default function ScrollyCanvas() {
           </div>
         )}
 
-        {/* Section 1 — CENTERED name */}
+        {/* S1 — centered hero with STRONG tagline */}
         <div style={{
-          opacity: s1o,
-          transform: `translateY(${s1y}px)`,
+          opacity: s1o, transform: `translateY(${s1y}px)`,
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
-          textAlign: "center",
-          padding: "0 2rem",
-          pointerEvents: "none",
-          zIndex: 10,
+          textAlign: "center", padding: "0 2rem",
+          pointerEvents: "none", zIndex: 10,
         }}>
           <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", textTransform: "uppercase", color: "#1db8a0", marginBottom: "1.2rem" }}>
-            Full Stack &amp; AI Developer
+            AI Engineer · Full Stack Developer
           </div>
           <h1 style={{
-            fontSize: "clamp(3.5rem, 8vw, 7rem)",
-            fontWeight: 700,
-            color: "#fff",
-            lineHeight: 1,
-            letterSpacing: "-0.02em",
-            textShadow: "0 4px 80px rgba(0,0,0,0.9)",
-            margin: 0,
+            fontSize: "clamp(3.5rem, 8vw, 7rem)", fontWeight: 700,
+            color: "#fff", lineHeight: 1, letterSpacing: "-0.02em",
+            textShadow: "0 4px 80px rgba(0,0,0,0.9)", margin: 0,
           }}>
             Narendran L<span style={{ color: "#1db8a0" }}>.</span>
           </h1>
           <div style={{ width: 60, height: 2, background: "#1db8a0", margin: "1.5rem auto", borderRadius: 1 }} />
-          <p style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)", color: "rgba(255,255,255,0.55)", letterSpacing: "0.06em" }}>
-            Building intelligent systems that feel alive.
+          <p style={{ fontSize: "clamp(1rem, 2vw, 1.3rem)", color: "rgba(255,255,255,0.7)", letterSpacing: "0.03em", maxWidth: "32ch", lineHeight: 1.5 }}>
+            I ship real AI products — not just side projects.
           </p>
+          {/* CTA buttons */}
+          <div style={{ display: "flex", gap: "1rem", marginTop: "2rem", pointerEvents: "all" }}>
+            <a href="#work" style={{
+              padding: "0.75rem 2rem", background: "#1db8a0", borderRadius: 999,
+              color: "#0a0f1e", fontWeight: 700, fontSize: "0.9rem",
+              textDecoration: "none", letterSpacing: "0.05em",
+              boxShadow: "0 0 30px rgba(29,184,160,0.4)",
+            }}>
+              See My Work
+            </a>
+            <a href="https://zipforgex.in" target="_blank" rel="noopener noreferrer" style={{
+              padding: "0.75rem 2rem", border: "1px solid rgba(255,255,255,0.3)",
+              borderRadius: 999, color: "rgba(255,255,255,0.8)",
+              fontSize: "0.9rem", textDecoration: "none", letterSpacing: "0.05em",
+              background: "rgba(0,0,0,0.2)", backdropFilter: "blur(10px)",
+            }}>
+              ZipForgeX ↗
+            </a>
+          </div>
         </div>
 
-        {/* Section 2 — left */}
+        {/* S2 — left */}
         <div style={{
-          opacity: s2o,
-          transform: `translateX(${s2x}px)`,
+          opacity: s2o, transform: `translateX(${s2x}px)`,
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column",
           alignItems: "flex-start", justifyContent: "center",
-          padding: "0 8vw",
-          pointerEvents: "none",
-          zIndex: 10,
+          padding: "0 8vw", pointerEvents: "none", zIndex: 10,
         }}>
           <div style={{ fontSize: "0.68rem", letterSpacing: "0.3em", color: "#1db8a0", textTransform: "uppercase", marginBottom: "1rem" }}>What I do</div>
           <p style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", fontWeight: 700, color: "#fff", lineHeight: 1.1, maxWidth: "12ch", textShadow: "0 4px 60px rgba(0,0,0,0.9)" }}>
@@ -158,16 +165,14 @@ export default function ScrollyCanvas() {
           </p>
         </div>
 
-        {/* Section 3 — right */}
+        {/* S3 — right */}
         <div style={{
-          opacity: s3o,
-          transform: `translateX(${s3x}px)`,
+          opacity: s3o, transform: `translateX(${s3x}px)`,
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column",
           alignItems: "flex-end", justifyContent: "center",
           padding: "0 8vw", textAlign: "right",
-          pointerEvents: "none",
-          zIndex: 10,
+          pointerEvents: "none", zIndex: 10,
         }}>
           <div style={{ fontSize: "0.68rem", letterSpacing: "0.3em", color: "#1db8a0", textTransform: "uppercase", marginBottom: "1rem" }}>My mission</div>
           <p style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", fontWeight: 700, color: "#fff", lineHeight: 1.1, maxWidth: "12ch", textShadow: "0 4px 60px rgba(0,0,0,0.9)" }}>
