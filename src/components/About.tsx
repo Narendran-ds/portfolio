@@ -5,7 +5,7 @@ const stats = [
   { value: "6+", label: "Projects Shipped" },
   { value: "1", label: "Live Product" },
   { value: "3rd", label: "Year B.Tech" },
-  { value: "2026", label: "Graduating" },
+  { value: "2027", label: "Graduating" },
 ];
 
 export default function About() {
