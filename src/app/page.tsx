@@ -9,7 +9,7 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main style={{ background: "#0a0f1e", width: "100%" }}>
+    <main style={{ background: "#060a10", width: "100%" }}>
       <Navbar />
       <ScrollyCanvas />
       <About />
@@ -18,9 +18,8 @@ export default function Home() {
       <Experience />
       <TechStack />
       <Contact />
-      <footer style={{ borderTop: "1px solid rgba(29,184,160,0.15)", padding: "2rem 6vw", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-        <span style={{ color: "rgba(232,234,240,0.3)", fontSize: "0.85rem" }}>© {new Date().getFullYear()} Narendran L.</span>
-        <span style={{ color: "rgba(232,234,240,0.2)", fontSize: "0.8rem", letterSpacing: "0.1em" }}>BUILT WITH NEXT.JS + FRAMER MOTION</span>
+      <footer style={{ borderTop: "1px solid rgba(249,115,22,0.12)", padding: "2rem 6vw", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", background: "#060a10" }}>
+        <span style={{ color: "rgba(250,250,250,0.25)", fontSize: "0.85rem" }}>© {new Date().getFullYear()} Narendran L</span>
       </footer>
     </main>
   );

@@ -1,6 +1,13 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 
+const BG = "radial-gradient(ellipse at 50% 100%, #1f0d00 0%, #0a0e14 40%, #060a10 100%)";
+const ACCENT = "#F97316";
+const ACCENT2 = "#FDBA74";
+const BORDER = "rgba(249,115,22,0.15)";
+const TEXT = "#FAFAFA";
+const MUTED = "rgba(250,250,250,0.4)";
+
 export default function Contact() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
@@ -11,24 +18,21 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" ref={ref} style={{ background: "#070c1a", padding: "8rem 6vw", borderTop: "1px solid rgba(29,184,160,0.1)" }}>
+    <section id="contact" ref={ref} style={{ background: BG, padding: "8rem 6vw", /* seamless */ }}>
       <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(30px)", transition: "all 0.8s ease" }}>
-          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: "#1db8a0", textTransform: "uppercase", marginBottom: "1.5rem" }}>Get In Touch</div>
-          <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 700, color: "#e8eaf0", lineHeight: 1.1, marginBottom: "1.5rem" }}>
-            Let&apos;s Build Something <span style={{ color: "#1db8a0" }}>Together</span>
+          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>Get In Touch</div>
+          <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 700, color: TEXT, lineHeight: 1.1, marginBottom: "1.5rem" }}>
+            Let&apos;s Build Something <span style={{ color: ACCENT }}>Together</span>
           </h2>
-          <p style={{ fontSize: "1rem", color: "rgba(232,234,240,0.45)", lineHeight: 1.8, marginBottom: "3rem" }}>
+          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.8, marginBottom: "3rem" }}>
             Open to SDE and ML fresher roles, freelance projects, and collaborations. Let&apos;s connect and build something great.
           </p>
-
-          <a href="mailto:narendranlofficial@gmail.com" style={{ display: "inline-block", padding: "1rem 3rem", background: "#1db8a0", borderRadius: 999, color: "#0a0f1e", fontWeight: 700, fontSize: "1rem", textDecoration: "none", letterSpacing: "0.05em", marginBottom: "2.5rem", transition: "all 0.3s", boxShadow: "0 0 30px rgba(29,184,160,0.3)" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#15a08a"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 50px rgba(29,184,160,0.5)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#1db8a0"; (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 30px rgba(29,184,160,0.3)"; }}
-          >
+          <a href="mailto:narendranlofficial@gmail.com" style={{ display: "inline-block", padding: "1rem 3rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "1rem", textDecoration: "none", letterSpacing: "0.05em", marginBottom: "2.5rem", transition: "all 0.3s", boxShadow: "0 0 40px rgba(249,115,22,0.35)" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 60px rgba(249,115,22,0.55)"; (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 40px rgba(249,115,22,0.35)"; (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)"; }}>
             Say Hello →
           </a>
-
           <div style={{ display: "flex", gap: "1.5rem", justifyContent: "center", flexWrap: "wrap" }}>
             {[
               { label: "LinkedIn", href: "https://linkedin.com/in/narendran-l1125" },
@@ -36,9 +40,9 @@ export default function Contact() {
               { label: "narendranlofficial@gmail.com", href: "mailto:narendranlofficial@gmail.com" },
             ].map(l => (
               <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer"
-                style={{ color: "rgba(232,234,240,0.4)", fontSize: "0.85rem", textDecoration: "none", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#1db8a0")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(232,234,240,0.4)")}>
+                style={{ color: MUTED, fontSize: "0.85rem", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = ACCENT2)}
+                onMouseLeave={e => (e.currentTarget.style.color = MUTED)}>
                 {l.label}
               </a>
             ))}

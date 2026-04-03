@@ -2,15 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { background: #0a0f1e; color: #e8eaf0; font-family: 'Georgia', serif; overflow-x: hidden; }
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #0a0f1e; }
-::-webkit-scrollbar-thumb { background: #1db8a0; border-radius: 2px; }
-::selection { background: rgba(29,184,160,0.3); }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(29,184,160,0.2); } 50% { box-shadow: 0 0 40px rgba(29,184,160,0.4); } }
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #060a10;
+    color: #FAFAFA;
+    font-family: 'Georgia', serif;
+    overflow-x: hidden;
+}
+
+/* Remove ALL section dividers — seamless flow */
+section {
+    border-top: none !important;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: #060a10;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #F97316;
+    border-radius: 2px;
+}
+
+::selection {
+    background: rgba(249, 115, 22, 0.3);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
