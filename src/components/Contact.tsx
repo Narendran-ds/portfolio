@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 
-const BG = "radial-gradient(ellipse at 50% 100%, #1f0d00 0%, #0a0e14 40%, #060a10 100%)";
+const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
 const ACCENT = "#F97316";
 const ACCENT2 = "#FDBA74";
 const BORDER = "rgba(249,115,22,0.15)";

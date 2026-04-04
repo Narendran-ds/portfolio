@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const links = ["About", "Work", "Experience", "Stack", "Contact"];
+const links = ["About", "Stack", "Work", "Experience", "Contact"];
 
 export default function Navbar() {
   const [onCanvas, setOnCanvas] = useState(true);

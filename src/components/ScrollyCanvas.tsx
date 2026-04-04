@@ -134,7 +134,7 @@ export default function ScrollyCanvas() {
 
         {/* S1 — center */}
         <div style={{ opacity: s1o, transform: `translateY(${s1y}px)`, position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 2rem", pointerEvents: "none", zIndex: 10 }}>
-          <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", textTransform: "uppercase", color: "#F97316", marginBottom: "1.2rem" }}>
+          <div style={{ fontSize: "0.72rem", letterSpacing: "0.35em", textTransform: "uppercase", color: "#FAFAFA", marginBottom: "1.2rem" }}>
             AI Engineer · Full Stack Developer
           </div>
           <h1 style={{ fontSize: "clamp(3.5rem, 8vw, 7rem)", fontWeight: 700, color: "#FAFAFA", lineHeight: 1, letterSpacing: "-0.02em", textShadow: "0 4px 80px rgba(0,0,0,0.9)", margin: 0 }}>

@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 
-const BG = "radial-gradient(ellipse at 20% 80%, #1f0d00 0%, #0a0e14 50%, #060a10 100%)";
+const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
 const ACCENT = "#F97316";
 const ACCENT2 = "#FDBA74";
 const BORDER = "rgba(249,115,22,0.15)";
@@ -13,7 +13,7 @@ const experiences = [
   {
     role: "AI Developer Intern",
     company: "Syncorb Geotech Pvt Ltd",
-    period: "2024",
+    period: "2025 - 2026",
     type: "Internship",
     points: [
       "Built BizOp Analytica — a Gemini API pipeline for business opportunity analysis",
@@ -29,7 +29,7 @@ const experiences = [
     points: [
       "Specializing in Machine Learning, Deep Learning, and Full Stack Development",
       "Built 6+ production-grade projects spanning web apps and ML systems",
-      "Currently in 3rd year, graduating 2026",
+      "Currently in 3rd year, graduating 2027",
     ],
   },
 ];

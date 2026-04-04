@@ -13,7 +13,7 @@ const stats = [
   { value: "6+", label: "Projects Shipped" },
   { value: "1", label: "Live Product" },
   { value: "3rd", label: "Year B.Tech" },
-  { value: "2026", label: "Graduating" },
+  { value: "2027", label: "Graduating" },
 ];
 
 export default function About() {
@@ -42,7 +42,7 @@ export default function About() {
             <strong style={{ color: TEXT }}>ZipForgeX</strong> is live with real users. <strong style={{ color: TEXT }}>BizOp Analytica</strong> was built during my internship at Syncorb Geotech. I bridge the gap between ML research and production engineering.
           </p>
           <p style={{ fontSize: "0.9rem", color: ACCENT2, fontStyle: "italic", marginBottom: "2.5rem", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "1rem" }}>
-            Currently targeting SDE and ML fresher roles at top product-based companies.
+            Aspiring SDE & ML Engineer building intelligent, real-world applications.
           </p>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <a href="https://linkedin.com/in/narendran-l1125" target="_blank" rel="noopener noreferrer" style={{ padding: "0.7rem 1.8rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "0.88rem", textDecoration: "none", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>LinkedIn ↗</a>
@@ -63,7 +63,7 @@ export default function About() {
           <div style={{ padding: "1.5rem", border: `1px solid rgba(253,186,116,0.15)`, borderRadius: 16, background: CARD }}>
             <div style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: ACCENT2, textTransform: "uppercase", marginBottom: "0.5rem" }}>Internship</div>
             <div style={{ fontSize: "1rem", fontWeight: 600, color: TEXT, marginBottom: "0.25rem" }}>AI Developer Intern</div>
-            <div style={{ fontSize: "0.85rem", color: MUTED }}>Syncorb Geotech Pvt Ltd · 2024</div>
+            <div style={{ fontSize: "0.85rem", color: MUTED }}>Syncorb Geotech Pvt Ltd · 2025</div>
             <div style={{ fontSize: "0.82rem", color: MUTED, marginTop: "0.5rem", lineHeight: 1.6 }}>Built BizOp Analytica — Gemini API + PaddleOCR pipeline for menu extraction and business analysis.</div>
           </div>
         </div>

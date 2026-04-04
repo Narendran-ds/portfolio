@@ -19,7 +19,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Remove ALL section dividers — seamless flow */
 section {
     border-top: none !important;
 }
