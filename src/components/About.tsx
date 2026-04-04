@@ -26,7 +26,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" ref={ref} style={{ background: BG, padding: "8rem 6vw", /* seamless */ }}>
+    <section id="about" ref={ref} style={{ background: BG, padding: "8rem 6vw" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }} className="about-grid">
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(40px)", transition: "all 0.8s ease" }}>
           <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>About Me</div>
@@ -38,8 +38,11 @@ export default function About() {
           <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "1rem" }}>
             I&apos;m Narendran L — a third-year AI &amp; Data Science student at Rajalakshmi Institute of Technology, Chennai. While most students build tutorial projects, I build things people actually use.
           </p>
-          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "2rem" }}>
+          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "1rem" }}>
             <strong style={{ color: TEXT }}>ZipForgeX</strong> is live with real users. <strong style={{ color: TEXT }}>BizOp Analytica</strong> was built during my internship at Syncorb Geotech. I bridge the gap between ML research and production engineering.
+          </p>
+          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "2rem" }}>
+            Beyond writing code, I&apos;m fluent in the <strong style={{ color: TEXT }}>AI tooling ecosystem</strong> — using AI-assisted workflows to design, build, and ship production-ready products significantly faster than conventional development cycles.
           </p>
           <p style={{ fontSize: "0.9rem", color: ACCENT2, fontStyle: "italic", marginBottom: "2.5rem", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "1rem" }}>
             Aspiring SDE & ML Engineer building intelligent, real-world applications.
