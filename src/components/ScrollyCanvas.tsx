@@ -20,12 +20,10 @@ export default function ScrollyCanvas() {
   const [progress, setProgress] = useState(0);
   const lastDrawnRef = useRef(-1);
 
-  // Preload all frames eagerly
   useEffect(() => {
     const imgs: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     let loaded = 0;
 
-    // Preload in order so first frames appear fast
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new window.Image();
       img.decoding = "async";
@@ -71,7 +69,6 @@ export default function ScrollyCanvas() {
     ctx.drawImage(img, ox, oy, rw, rh);
   }, []);
 
-  // Scroll tracking
   useEffect(() => {
     const onScroll = () => {
       const c = containerRef.current;
@@ -87,7 +84,6 @@ export default function ScrollyCanvas() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // RAF loop — only redraws when frame changes
   useEffect(() => {
     if (!imagesLoaded) return;
     let rafId: number;
@@ -121,7 +117,6 @@ export default function ScrollyCanvas() {
           style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "block" }}
         />
 
-        {/* Very subtle gradient — doesn't kill the cinematic image */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,10,16,0.1) 0%, transparent 25%, rgba(6,10,16,0.2) 100%)", pointerEvents: "none" }} />
 
         {!imagesLoaded && (
@@ -154,7 +149,7 @@ export default function ScrollyCanvas() {
           </div>
         </div>
 
-        {/* S2 — left — UPDATED TEXT */}
+        {/* S2 — left */}
         <div style={{ opacity: s2o, transform: `translateX(${s2x}px)`, position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", padding: "0 8vw", pointerEvents: "none", zIndex: 10 }}>
           <div style={{ fontSize: "0.68rem", letterSpacing: "0.3em", color: "#F97316", textTransform: "uppercase", marginBottom: "1rem" }}>What I do</div>
           <p style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", fontWeight: 700, color: "#FAFAFA", lineHeight: 1.1, maxWidth: "13ch", textShadow: "0 4px 60px rgba(0,0,0,0.9)" }}>
@@ -162,7 +157,7 @@ export default function ScrollyCanvas() {
           </p>
         </div>
 
-        {/* S3 — right — UPDATED TEXT */}
+        {/* S3 — right */}
         <div style={{ opacity: s3o, transform: `translateX(${s3x}px)`, position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", padding: "0 8vw", textAlign: "right", pointerEvents: "none", zIndex: 10 }}>
           <div style={{ fontSize: "0.68rem", letterSpacing: "0.3em", color: "#F97316", textTransform: "uppercase", marginBottom: "1rem" }}>My edge</div>
           <p style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", fontWeight: 700, color: "#FAFAFA", lineHeight: 1.1, maxWidth: "13ch", textShadow: "0 4px 60px rgba(0,0,0,0.9)" }}>
