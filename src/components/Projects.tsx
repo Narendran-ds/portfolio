@@ -48,7 +48,7 @@ const projects = [
     impact: "No pretrained models. Full custom PyTorch seq2seq transformer architecture.",
     tech: ["Python", "PyTorch", "Transformer", "seq2seq"],
     live: "",
-    github: "https://github.com/Narendran-ds", //need to update 
+    github: "https://github.com/Narendran-ds/english-french-nmt.git",
     img: "/projects/nmt.png",
   },
   {
