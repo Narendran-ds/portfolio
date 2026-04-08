@@ -1,7 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const links = ["About", "Stack", "Work", "Experience", "Contact"];
+const links = ["About", "Work", "Experience", "Stack", "Contact"];
+
+function openContact() {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile) {
+    window.location.href = "mailto:narendranlofficial@gmail.com";
+  } else {
+    window.open("https://mail.google.com/mail/?view=cm&to=narendranlofficial@gmail.com&su=Hi%20Narendran%20-%20Let's%20Connect", "_blank");
+  }
+}
 
 export default function Navbar() {
   const [onCanvas, setOnCanvas] = useState(true);
@@ -27,6 +36,7 @@ export default function Navbar() {
       borderBottom: onCanvas ? "none" : "1px solid rgba(249,115,22,0.12)",
       transition: "all 0.6s ease",
     }}>
+
 
       <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "2.5rem", alignItems: "center" }} className="nav-links">
         {links.map(l => (
@@ -54,17 +64,17 @@ export default function Navbar() {
           onMouseLeave={e => (e.currentTarget.style.color = onCanvas ? "rgba(255,255,255,0.6)" : "rgba(250,250,250,0.4)")}>
           Resume ↗
         </a>
-        <a href="mailto:narendranlofficial@gmail.com" style={{
+        <button onClick={openContact} style={{
           padding: "0.5rem 1.4rem", border: "1px solid rgba(249,115,22,0.8)",
           borderRadius: 999, color: "#F97316", fontSize: "0.82rem",
-          textDecoration: "none", letterSpacing: "0.08em", transition: "all 0.25s",
+          cursor: "pointer", letterSpacing: "0.08em", transition: "all 0.25s",
           whiteSpace: "nowrap", background: onCanvas ? "rgba(0,0,0,0.2)" : "transparent",
           backdropFilter: "blur(10px)",
         }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = "#F97316"; (e.currentTarget as HTMLAnchorElement).style.color = "#0A0A0A"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = onCanvas ? "rgba(0,0,0,0.2)" : "transparent"; (e.currentTarget as HTMLAnchorElement).style.color = "#F97316"; }}>
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#F97316"; (e.currentTarget as HTMLButtonElement).style.color = "#0A0A0A"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = onCanvas ? "rgba(0,0,0,0.2)" : "transparent"; (e.currentTarget as HTMLButtonElement).style.color = "#F97316"; }}>
           Hire Me
-        </a>
+        </button>
       </div>
       <style>{`@media(max-width:768px){.nav-links{display:none!important}}`}</style>
     </nav>
