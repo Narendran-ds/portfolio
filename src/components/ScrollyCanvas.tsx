@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const TOTAL_FRAMES = 120;
+const EAGER_FRAMES = 10; // show canvas after this many frames load
 
 function fade(p: number, i0: number, i1: number, o0: number, o1: number) {
   if (p < i0) return 0;
@@ -17,6 +18,7 @@ export default function ScrollyCanvas() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const progressRef = useRef(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [loadedCount, setLoadedCount] = useState(0);
   const [progress, setProgress] = useState(0);
   const lastDrawnRef = useRef(-1);
 
@@ -24,20 +26,27 @@ export default function ScrollyCanvas() {
     const imgs: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     let loaded = 0;
 
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
+    const loadImg = (i: number) => {
       const img = new window.Image();
       img.decoding = "async";
       img.src = `/sequence/frame_${String(i).padStart(3, "0")}.webp`;
-      img.onload = () => {
+      img.onload = img.onerror = () => {
         loaded++;
-        if (loaded === TOTAL_FRAMES) setImagesLoaded(true);
-      };
-      img.onerror = () => {
-        loaded++;
-        if (loaded === TOTAL_FRAMES) setImagesLoaded(true);
+        setLoadedCount(loaded);
+        // Show canvas as soon as first EAGER_FRAMES are ready
+        if (loaded === EAGER_FRAMES) setImagesLoaded(true);
       };
       imgs[i] = img;
-    }
+    };
+
+    // Load first EAGER_FRAMES immediately
+    for (let i = 0; i < EAGER_FRAMES; i++) loadImg(i);
+
+    // Load remaining frames shortly after — non-blocking
+    setTimeout(() => {
+      for (let i = EAGER_FRAMES; i < TOTAL_FRAMES; i++) loadImg(i);
+    }, 200);
+
     imagesRef.current = imgs;
   }, []);
 
@@ -102,6 +111,8 @@ export default function ScrollyCanvas() {
     return () => cancelAnimationFrame(rafId);
   }, [imagesLoaded, drawFrame]);
 
+  const progressPct = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+
   const s1o = fade(progress, 0, 0.06, 0.2, 0.28);
   const s1y = progress < 0.06 ? 30 * (1 - progress / 0.06) : 0;
   const s2o = fade(progress, 0.28, 0.35, 0.5, 0.57);
@@ -119,11 +130,49 @@ export default function ScrollyCanvas() {
 
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(6,10,16,0.1) 0%, transparent 25%, rgba(6,10,16,0.2) 100%)", pointerEvents: "none" }} />
 
+        {/* Loading overlay — only shown until first 10 frames ready */}
         {!imagesLoaded && (
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#060a10", zIndex: 50 }}>
-            <div style={{ width: 36, height: 36, border: "2px solid rgba(249,115,22,0.3)", borderTopColor: "#F97316", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-            <p style={{ marginTop: 16, color: "rgba(250,250,250,0.4)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase" }}>Loading...</p>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+          <div style={{
+            position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            background: "#060a10", zIndex: 50,
+          }}>
+            {/* Spinner */}
+            <div style={{
+              width: 36, height: 36,
+              border: "2px solid rgba(249,115,22,0.3)",
+              borderTopColor: "#F97316",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }} />
+
+            {/* Progress bar */}
+            <div style={{
+              marginTop: 24, width: 200, height: 2,
+              background: "rgba(255,255,255,0.08)", borderRadius: 1,
+            }}>
+              <div style={{
+                height: "100%",
+                width: `${progressPct}%`,
+                background: "linear-gradient(90deg, #F97316, #FDBA74)",
+                borderRadius: 1,
+                transition: "width 0.15s ease",
+              }} />
+            </div>
+
+            {/* Count label */}
+            <p style={{
+              marginTop: 12,
+              color: "rgba(250,250,250,0.35)",
+              fontSize: 11,
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {loadedCount} / {TOTAL_FRAMES}
+            </p>
+
+            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>
         )}
 
