@@ -16,9 +16,9 @@ const experiences = [
     period: "2025 - 2026",
     type: "Internship",
     points: [
-      "Built BizOp Analytica — a Gemini API pipeline for business opportunity analysis",
-      "Implemented PaddleOCR for automated menu text extraction at scale",
-      "Developed end-to-end data processing pipeline deployed in production",
+      "Identified a manual data bottleneck and independently built a Gemini API pipeline generating 500+ global cuisines and up to 500 dishes per cuisine — replacing manual BeautifulSoup scripts and 5 Scrapy spiders with a single AI-driven workflow",
+      "Added a history-tracking system that skips completed entries on reruns, eliminating repeated processing overhead across pipeline runs",
+      "Rebuilt the restaurant menu extraction pipeline from scratch using PaddleOCR after Zomato restricted API access — replacing a broken, 70% complete prototype with a fully production-ready, folder-based batch system",
     ],
   },
   {
@@ -27,9 +27,9 @@ const experiences = [
     period: "2023 — Present",
     type: "Education",
     points: [
-      "Specializing in Machine Learning, Deep Learning, and Full Stack Development",
-      "Built 6+ production-grade projects spanning web apps and ML systems",
-      "Currently in 3rd year, graduating 2027",
+      "Specializing in Machine Learning, Deep Learning, and Full-Stack Development",
+      "Designed and deployed production-grade work including ZipForgeX, a live full-stack platform with OAuth2 and JWT authentication, and SHAP-explainable ML dashboards",
+      "Currently in final year, graduating 2027",
     ],
   },
 ];
