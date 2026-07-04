@@ -27,9 +27,11 @@ export default function Contact() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.1 });
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVis(true); },
+      { threshold: 0.1 }
+    );
     if (ref.current) obs.observe(ref.current);
-    // detect mobile for showing phone number
     setIsMobile(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
     return () => obs.disconnect();
   }, []);
@@ -42,7 +44,19 @@ export default function Contact() {
 
   return (
     <section id="contact" ref={ref} style={{ background: BG, padding: "8rem 6vw" }}>
-      <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+      {/* data-cursor="card" scopes the scanner to just the content box */}
+      <div
+        data-cursor="card"
+        style={{
+          maxWidth: 700,
+          margin: "0 auto",
+          textAlign: "center",
+          padding: "3rem 2.5rem",
+          borderRadius: 20,
+          border: `1px solid ${BORDER}`,
+          background: "rgba(15,10,5,0.5)",
+        }}
+      >
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(30px)", transition: "all 0.8s ease" }}>
           <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>Get In Touch</div>
           <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 700, color: TEXT, lineHeight: 1.1, marginBottom: "1.5rem" }}>
@@ -52,7 +66,6 @@ export default function Contact() {
             Open to SDE and ML fresher roles, freelance projects, and collaborations.
           </p>
 
-          {/* Main CTA */}
           <button
             onClick={() => openMail("Hi Narendran — Let's Connect")}
             style={{ display: "inline-block", padding: "1rem 3rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "1rem", cursor: "pointer", letterSpacing: "0.05em", marginBottom: "2.5rem", transition: "all 0.3s", boxShadow: "0 0 40px rgba(249,115,22,0.35)", border: "none" }}
@@ -62,7 +75,6 @@ export default function Contact() {
             Say Hello →
           </button>
 
-          {/* Contact links */}
           <div style={{ display: "flex", gap: "1.5rem", justifyContent: "center", flexWrap: "wrap", marginBottom: isMobile ? "1.5rem" : 0 }}>
             {links.map(l => (
               l.href ? (
@@ -83,7 +95,6 @@ export default function Contact() {
             ))}
           </div>
 
-          {/* Phone — mobile only */}
           {isMobile && (
             <div style={{ marginTop: "0.5rem" }}>
               <a href="tel:+917904047741"

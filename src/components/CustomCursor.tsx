@@ -4,41 +4,48 @@ import { useEffect, useRef, useState, useCallback } from "react";
 
 type CursorState = "default" | "hover" | "card";
 
-interface BracketBox {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
+interface BoxRect {
+  top: number; left: number; width: number; height: number;
 }
- 
-export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<CursorState>("default");
-  const [bracketBox, setBracketBox] = useState<BracketBox | null>(null);
-  const [scanActive, setScanActive] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const posRef = useRef({ x: -200, y: -200 });
-  const rafRef = useRef<number>(0);
 
-  // Recalculate bracket on scroll
+export default function CustomCursor() {
+  const cursorRef     = useRef<HTMLDivElement>(null);
+  const posRef        = useRef({ x: -300, y: -300 });
+  const rafRef        = useRef<number>(0);
+
+  const [state,       setState]      = useState<CursorState>("default");
+  const [isVisible,   setIsVisible]  = useState(false);
+  const [cardBox,     setCardBox]    = useState<BoxRect | null>(null);
+  const [scanActive,  setScanActive] = useState(false);
   const activeCardRef = useRef<HTMLElement | null>(null);
 
-  const updateBracket = useCallback(() => {
+  const GOLD     = "#c9a84c";
+  const GOLD_DIM = "rgba(201,168,76,0.45)";
+  const WHITE    = "rgba(255,255,255,0.55)";
+
+  const updateCardRect = useCallback(() => {
     if (activeCardRef.current) {
       const r = activeCardRef.current.getBoundingClientRect();
-      setBracketBox({ top: r.top, left: r.left, width: r.width, height: r.height });
+      setCardBox({ top: r.top, left: r.left, width: r.width, height: r.height });
     }
   }, []);
 
+  // ── RAF position loop ────────────────────────────────────
   useEffect(() => {
-    const animate = () => {
+    const tick = () => {
       if (cursorRef.current) {
         const { x, y } = posRef.current;
-        cursorRef.current.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        cursorRef.current.style.transform =
+          `translate(${x}px, ${y}px) translate(-50%, -50%)`;
       }
-      rafRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(tick);
     };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
+  // ── Mouse events ─────────────────────────────────────────
+  useEffect(() => {
     const onMove = (e: MouseEvent) => {
       posRef.current = { x: e.clientX, y: e.clientY };
       if (!isVisible) setIsVisible(true);
@@ -46,22 +53,26 @@ export default function CustomCursor() {
 
     const onOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
-      const cardEl = t.closest("[data-cursor='card']") as HTMLElement | null;
+      const cardEl = t.closest<HTMLElement>("[data-cursor='card']");
 
       if (cardEl) {
         activeCardRef.current = cardEl;
         const r = cardEl.getBoundingClientRect();
-        setBracketBox({ top: r.top, left: r.left, width: r.width, height: r.height });
+        setCardBox({ top: r.top, left: r.left, width: r.width, height: r.height });
         setState("card");
         setScanActive(true);
-      } else if (t.closest("a") || t.closest("button") || t.closest("[data-cursor='hover']")) {
+      } else if (
+        t.closest("a") ||
+        t.closest("button") ||
+        t.closest<HTMLElement>("[data-cursor='hover']")
+      ) {
         activeCardRef.current = null;
-        setBracketBox(null);
+        setCardBox(null);
         setState("hover");
         setScanActive(false);
       } else {
         activeCardRef.current = null;
-        setBracketBox(null);
+        setCardBox(null);
         setState("default");
         setScanActive(false);
       }
@@ -70,7 +81,7 @@ export default function CustomCursor() {
     const onLeave = () => {
       setIsVisible(false);
       activeCardRef.current = null;
-      setBracketBox(null);
+      setCardBox(null);
       setState("default");
       setScanActive(false);
     };
@@ -78,26 +89,24 @@ export default function CustomCursor() {
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseover", onOver);
     document.addEventListener("mouseleave", onLeave);
-    window.addEventListener("scroll", updateBracket, { passive: true });
-    rafRef.current = requestAnimationFrame(animate);
+    window.addEventListener("scroll", updateCardRect, { passive: true });
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("scroll", updateBracket);
-      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", updateCardRect);
     };
-  }, [isVisible, updateBracket]);
+  }, [isVisible, updateCardRect]);
 
-  const GOLD = "#c9a84c";
-  const GOLD_DIM = "rgba(201,168,76,0.45)";
-  const WHITE_DIM = "rgba(255,255,255,0.55)";
-
-  const armColor = state === "default" ? WHITE_DIM : GOLD;
-  const armLength = state === "card" ? 10 : 8;
-  const gap = state === "hover" ? 2 : 5;
-  const centerDotSize = state === "hover" ? 5 : 3;
+  // ── Cursor visual values ─────────────────────────────────
+  const armColor = state === "default" ? WHITE : GOLD;
+  const armLen   = state === "card" ? 11 : 8;
+  const gap      = state === "hover" ? 2 : 5;
+  const dotR     = state === "hover" ? 5 : 3;
+  const dotFill  = state === "hover" ? GOLD : "transparent";
+  const dotStroke = state === "hover" ? 0 : 1.2;
+  const scale    = state === "card" ? 1.55 : state === "hover" ? 1.1 : 1;
 
   return (
     <>
@@ -105,170 +114,140 @@ export default function CustomCursor() {
       <div
         ref={cursorRef}
         style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          pointerEvents: "none",
-          zIndex: 9999,
+          position: "fixed", top: 0, left: 0,
+          pointerEvents: "none", zIndex: 9999,
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.2s ease",
           willChange: "transform",
         }}
       >
         <svg
-          width="40"
-          height="40"
-          viewBox="-20 -20 40 40"
+          width="44" height="44" viewBox="-22 -22 44 44"
           style={{
             overflow: "visible",
             transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-            transform: state === "card" ? "scale(1.5)" : state === "hover" ? "scale(1.1)" : "scale(1)",
+            transform: `scale(${scale})`,
           }}
         >
-          {/* Center dot */}
-          <circle
-            cx="0"
-            cy="0"
-            r={centerDotSize}
-            fill={state === "hover" ? GOLD : "transparent"}
-            stroke={armColor}
-            strokeWidth={state === "hover" ? 0 : 1.2}
-            style={{ transition: "r 0.25s ease, fill 0.25s ease" }}
-          />
+          <circle cx="0" cy="0" r={dotR}
+            fill={dotFill} stroke={armColor} strokeWidth={dotStroke}
+            style={{ transition: "r 0.25s, fill 0.25s, stroke 0.25s" }} />
 
-          {/* Crosshair arms — top, bottom, left, right */}
-          {/* Top */}
-          <line x1="0" y1={-(gap)} x2="0" y2={-(gap + armLength)} stroke={armColor} strokeWidth="1.5" strokeLinecap="round"
-            style={{ transition: "stroke 0.2s" }} />
-          {/* Bottom */}
-          <line x1="0" y1={gap} x2="0" y2={gap + armLength} stroke={armColor} strokeWidth="1.5" strokeLinecap="round"
-            style={{ transition: "stroke 0.2s" }} />
-          {/* Left */}
-          <line x1={-(gap)} y1="0" x2={-(gap + armLength)} y2="0" stroke={armColor} strokeWidth="1.5" strokeLinecap="round"
-            style={{ transition: "stroke 0.2s" }} />
-          {/* Right */}
-          <line x1={gap} y1="0" x2={gap + armLength} y2="0" stroke={armColor} strokeWidth="1.5" strokeLinecap="round"
-            style={{ transition: "stroke 0.2s" }} />
+          {/* 4 crosshair arms */}
+          {([
+            ["0", `-${gap}`, "0", `-${gap + armLen}`],
+            ["0", `${gap}`,  "0", `${gap + armLen}`],
+            [`-${gap}`, "0", `-${gap + armLen}`, "0"],
+            [`${gap}`,  "0", `${gap + armLen}`,  "0"],
+          ] as string[][]).map(([x1, y1, x2, y2], i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke={armColor} strokeWidth="1.5" strokeLinecap="round"
+              style={{ transition: "stroke 0.2s" }} />
+          ))}
 
-          {/* Diagonal ticks — visible on card hover only */}
+          {/* Diagonal ticks — card state only */}
           {state === "card" && (
-            <>
-              <line x1="4" y1="-4" x2="7" y2="-7" stroke={GOLD_DIM} strokeWidth="1" strokeLinecap="round" />
-              <line x1="-4" y1="-4" x2="-7" y2="-7" stroke={GOLD_DIM} strokeWidth="1" strokeLinecap="round" />
-              <line x1="4" y1="4" x2="7" y2="7" stroke={GOLD_DIM} strokeWidth="1" strokeLinecap="round" />
-              <line x1="-4" y1="4" x2="-7" y2="7" stroke={GOLD_DIM} strokeWidth="1" strokeLinecap="round" />
-            </>
+            [[ 4,-4, 7,-7],[-4,-4,-7,-7],[ 4, 4, 7, 7],[-4, 4,-7, 7]].map(
+              ([x1,y1,x2,y2], i) => (
+                <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke={GOLD_DIM} strokeWidth="1" strokeLinecap="round" />
+              )
+            )
           )}
 
-          {/* Outer pulse ring — card state */}
+          {/* Pulse ring — card */}
           {state === "card" && (
-            <circle cx="0" cy="0" r="18" fill="none" stroke={GOLD_DIM} strokeWidth="0.8"
+            <circle cx="0" cy="0" r="20" fill="none"
+              stroke={GOLD_DIM} strokeWidth="0.8"
               style={{ animation: "reticlePulse 1.8s ease-out infinite" }} />
           )}
 
-          {/* Hover ring */}
+          {/* Pulse ring — hover */}
           {state === "hover" && (
-            <circle cx="0" cy="0" r="14" fill="none" stroke={GOLD} strokeWidth="1"
+            <circle cx="0" cy="0" r="15" fill="none"
+              stroke={GOLD} strokeWidth="1"
               style={{ animation: "reticlePulse 1.2s ease-out infinite" }} />
           )}
         </svg>
       </div>
 
-      {/* ── Detection bracket overlay on card ── */}
-      {bracketBox && (
+      {/* ── Detection bracket overlay ── */}
+      {cardBox && (
         <div
           style={{
             position: "fixed",
-            top: bracketBox.top - 6,
-            left: bracketBox.left - 6,
-            width: bracketBox.width + 12,
-            height: bracketBox.height + 12,
+            top:    cardBox.top  - 7,
+            left:   cardBox.left - 7,
+            width:  cardBox.width  + 14,
+            height: cardBox.height + 14,
             pointerEvents: "none",
             zIndex: 9990,
-            animation: "bracketIn 0.22s cubic-bezier(0.34,1.56,0.64,1) forwards",
+            animation: "bracketIn 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards",
           }}
         >
-          {/* Corner brackets — SVG drawn as 4 L-shapes */}
-          <svg
-            width="100%"
-            height="100%"
-            style={{ position: "absolute", inset: 0, overflow: "visible" }}
-          >
+          <svg width="100%" height="100%"
+            style={{ position: "absolute", inset: 0, overflow: "visible" }}>
             {/* Top-left */}
-            <polyline points="20,0 0,0 0,20" fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" />
+            <polyline points="22,0 0,0 0,22"
+              fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" />
             {/* Top-right */}
             <polyline
-              points={`${bracketBox.width - 8},0 ${bracketBox.width + 12},0 ${bracketBox.width + 12},20`}
+              points={`${cardBox.width - 8},0 ${cardBox.width + 14},0 ${cardBox.width + 14},22`}
               fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" />
             {/* Bottom-left */}
             <polyline
-              points={`0,${bracketBox.height - 8} 0,${bracketBox.height + 12} 20,${bracketBox.height + 12}`}
+              points={`0,${cardBox.height - 8} 0,${cardBox.height + 14} 22,${cardBox.height + 14}`}
               fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" />
             {/* Bottom-right */}
             <polyline
-              points={`${bracketBox.width - 8},${bracketBox.height + 12} ${bracketBox.width + 12},${bracketBox.height + 12} ${bracketBox.width + 12},${bracketBox.height - 8}`}
+              points={`${cardBox.width - 8},${cardBox.height + 14} ${cardBox.width + 14},${cardBox.height + 14} ${cardBox.width + 14},${cardBox.height - 8}`}
               fill="none" stroke={GOLD} strokeWidth="2" strokeLinecap="round" />
           </svg>
 
-          {/* Scan line sweeping through card */}
+          {/* Scan line inside the card */}
           {scanActive && (
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                height: "1px",
-                background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
-                opacity: 0.5,
-                animation: "scanLine 1.6s ease-in-out infinite",
-              }}
-            />
+            <div style={{
+              position: "absolute", left: 0, right: 0, height: "1px",
+              background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
+              opacity: 0.55,
+              animation: "scanLine 1.6s ease-in-out infinite",
+            }} />
           )}
 
-          {/* "DETECTED" label tag — top right corner */}
-          <div
-            style={{
-              position: "absolute",
-              top: "-22px",
-              right: 0,
-              fontSize: "9px",
-              letterSpacing: "0.15em",
-              color: GOLD,
-              fontFamily: "monospace",
-              opacity: 0.7,
-              animation: "fadeTagIn 0.3s 0.1s both",
-            }}
-          >
+          {/* FOCUS label */}
+          <div style={{
+            position: "absolute", top: "-22px", right: 0,
+            fontSize: "9px", letterSpacing: "0.18em",
+            color: GOLD, fontFamily: "monospace", opacity: 0.75,
+            animation: "fadeTagIn 0.25s 0.08s both",
+          }}>
             FOCUS
           </div>
         </div>
       )}
 
-      {/* ── Global keyframes ── */}
+      {/* ── Keyframes ── */}
       <style>{`
         *, *::before, *::after { cursor: none !important; }
 
         @keyframes reticlePulse {
           0%   { transform: scale(0.85); opacity: 0.8; }
-          60%  { transform: scale(1.15); opacity: 0.2; }
+          60%  { transform: scale(1.2);  opacity: 0.15; }
           100% { transform: scale(0.85); opacity: 0; }
         }
-
         @keyframes bracketIn {
-          from { opacity: 0; transform: scale(0.94); }
+          from { opacity: 0; transform: scale(0.93); }
           to   { opacity: 1; transform: scale(1); }
         }
-
         @keyframes scanLine {
           0%   { top: 0%;   opacity: 0; }
-          5%   { opacity: 0.5; }
-          95%  { opacity: 0.5; }
+          5%   { opacity: 0.55; }
+          95%  { opacity: 0.55; }
           100% { top: 100%; opacity: 0; }
         }
-
         @keyframes fadeTagIn {
           from { opacity: 0; transform: translateY(4px); }
-          to   { opacity: 0.7; transform: translateY(0); }
+          to   { opacity: 0.75; transform: translateY(0); }
         }
       `}</style>
     </>

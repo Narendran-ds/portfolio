@@ -18,7 +18,7 @@ const projects = [
     impact: "Live at zipforgex.in with real users, JWT + OAuth2 auth, ZIP history, custom domain.",
     tech: ["Java", "Spring Boot", "React", "PostgreSQL", "Railway", "Vercel"],
     live: "https://zipforgex.in",
-    github: "",           // no github for zipforgex
+    github: "",
     img: "/projects/zipforgex.in.png",
   },
   {
@@ -58,7 +58,7 @@ const projects = [
     impact: "Built during internship at Syncorb Geotech. Production-grade pipeline with real client data.",
     tech: ["Gemini API", "PaddleOCR", "Python", "FastAPI"],
     live: "",
-    github: "",           // no live/github for internship
+    github: "",
     img: "/projects/bizop.png",
   },
   {
@@ -87,7 +87,6 @@ export default function Projects() {
   const trackRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  // drag state
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartOffset = useRef(0);
@@ -101,7 +100,6 @@ export default function Projects() {
     return () => obs.disconnect();
   }, []);
 
-  // clamp offset within valid infinite range
   const clamp = (val: number) => {
     if (val < TOTAL_W * 0.5) return val + TOTAL_W;
     if (val > TOTAL_W * 2.5) return val - TOTAL_W;
@@ -114,7 +112,6 @@ export default function Projects() {
     if (trackRef.current) trackRef.current.style.transform = `translateX(-${clamped}px)`;
   };
 
-  // RAF auto-scroll
   useEffect(() => {
     const speed = 1;
     const step = () => {
@@ -127,7 +124,6 @@ export default function Projects() {
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, [paused]);
 
-  // Mouse drag handlers
   const onMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true;
     dragStartX.current = e.clientX;
@@ -154,7 +150,6 @@ export default function Projects() {
     if (!isDragging.current) return;
     isDragging.current = false;
     if (wrapRef.current) wrapRef.current.style.cursor = "grab";
-    // momentum fling
     let v = -velocity.current * 12;
     const fling = () => {
       if (Math.abs(v) < 0.1) return;
@@ -165,7 +160,6 @@ export default function Projects() {
     requestAnimationFrame(fling);
   };
 
-  // Touch handlers
   const onTouchStart = (e: React.TouchEvent) => {
     isDragging.current = true;
     dragStartX.current = e.touches[0].clientX;
@@ -199,14 +193,13 @@ export default function Projects() {
     requestAnimationFrame(fling);
   };
 
-  // Trackpad / wheel horizontal scroll
   const onWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     applyOffset(offsetRef.current + e.deltaX + e.deltaY * 0.5);
   };
 
   return (
-    <section id="work" ref={ref} style={{ background: BG, padding: "7rem 0" }}>
+    <section id="work" ref={ref} data-scan-section style={{ background: BG, padding: "7rem 0" }}>
       {/* Header */}
       <div style={{ padding: "0 6vw", maxWidth: 1200, margin: "0 auto 4rem" }}>
         <div style={{ opacity: vis ? 1 : 0, transition: "opacity 0.6s" }}>
@@ -246,6 +239,7 @@ export default function Projects() {
           {looped.map((p, i) => (
             <div
               key={`${p.title}-${i}`}
+              data-cursor="card"
               style={{
                 width: CARD_W,
                 flexShrink: 0,
@@ -287,7 +281,6 @@ export default function Projects() {
                   ))}
                 </div>
 
-                {/* Buttons — conditional per project */}
                 {(p.live || p.github) && (
                   <div style={{ display: "flex", gap: "0.5rem", paddingTop: "0.25rem" }}>
                     {p.live && (

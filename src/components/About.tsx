@@ -11,7 +11,7 @@ const MUTED = "rgba(250,250,250,0.45)";
 
 const stats = [
   { value: "6+", label: "Projects Shipped" },
-  { value: "1", label: "Live Product" },
+  { value: "1",  label: "Live Product" },
   { value: "3rd", label: "Year B.Tech" },
   { value: "2027", label: "Graduating" },
 ];
@@ -20,14 +20,21 @@ export default function About() {
   const ref = useRef<HTMLElement>(null);
   const [vis, setVis] = useState(false);
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.1 });
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVis(true); },
+      { threshold: 0.1 }
+    );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
 
   return (
     <section id="about" ref={ref} style={{ background: BG, padding: "8rem 6vw" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }} className="about-grid">
+      <div
+        style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}
+        className="about-grid"
+      >
+        {/* ── Left: text ── */}
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(40px)", transition: "all 0.8s ease" }}>
           <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>About Me</div>
           <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: TEXT, lineHeight: 1.2, marginBottom: "0.5rem" }}>
@@ -45,7 +52,7 @@ export default function About() {
             Beyond writing code, I&apos;m fluent in the <strong style={{ color: TEXT }}>AI tooling ecosystem</strong> — using AI-assisted workflows to design, build, and ship production-ready products significantly faster than conventional development cycles.
           </p>
           <p style={{ fontSize: "0.9rem", color: ACCENT2, fontStyle: "italic", marginBottom: "2.5rem", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "1rem" }}>
-            Aspiring SDE & ML Engineer building intelligent, real-world applications.
+            Aspiring SDE &amp; ML Engineer building intelligent, real-world applications.
           </p>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <a href="https://linkedin.com/in/narendran-l1125" target="_blank" rel="noopener noreferrer" style={{ padding: "0.7rem 1.8rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "0.88rem", textDecoration: "none", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>LinkedIn ↗</a>
@@ -54,16 +61,34 @@ export default function About() {
           </div>
         </div>
 
+        {/* ── Right: stat cards + internship card ── */}
         <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(40px)", transition: "all 0.8s ease 0.2s" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
             {stats.map((s, i) => (
-              <div key={s.label} style={{ padding: "2rem", border: `1px solid ${BORDER}`, borderRadius: 16, background: CARD, opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(20px)", transition: `all 0.6s ease ${0.3 + i * 0.1}s` }}>
+              <div
+                key={s.label}
+                data-cursor="card"
+                style={{
+                  padding: "2rem",
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 16,
+                  background: CARD,
+                  opacity: vis ? 1 : 0,
+                  transform: vis ? "none" : "translateY(20px)",
+                  transition: `all 0.6s ease ${0.3 + i * 0.1}s`,
+                }}
+              >
                 <div style={{ fontSize: "2.5rem", fontWeight: 700, color: ACCENT, lineHeight: 1 }}>{s.value}</div>
                 <div style={{ fontSize: "0.78rem", color: MUTED, marginTop: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>{s.label}</div>
               </div>
             ))}
           </div>
-          <div style={{ padding: "1.5rem", border: `1px solid rgba(253,186,116,0.15)`, borderRadius: 16, background: CARD }}>
+
+          {/* Internship card */}
+          <div
+            data-cursor="card"
+            style={{ padding: "1.5rem", border: `1px solid rgba(253,186,116,0.15)`, borderRadius: 16, background: CARD }}
+          >
             <div style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: ACCENT2, textTransform: "uppercase", marginBottom: "0.5rem" }}>Internship</div>
             <div style={{ fontSize: "1rem", fontWeight: 600, color: TEXT, marginBottom: "0.25rem" }}>AI Developer Intern</div>
             <div style={{ fontSize: "0.85rem", color: MUTED }}>Syncorb Geotech Pvt Ltd · 2025</div>
