@@ -1,315 +1,176 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
+import { featuredProjects } from "@/data/projects";
+import ProjectCover from "./ProjectCover";
+import { EASE } from "./useReveal";
 
-const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
-const ACCENT = "#F97316";
-const ACCENT2 = "#FDBA74";
-const BORDER = "rgba(249,115,22,0.15)";
-const TEXT = "#FAFAFA";
-const MUTED = "rgba(250,250,250,0.45)";
-const CARD = "rgba(20,12,5,0.85)";
-
-const projects = [
-  {
-    tag: "Full Stack Web App · LIVE",
-    title: "ZipForgeX",
-    problem: "Developers waste time manually creating folder structures and ZIP files for project scaffolding.",
-    impact: "Live at zipforgex.in with real users, JWT + OAuth2 auth, ZIP history, custom domain.",
-    tech: ["Java", "Spring Boot", "React", "PostgreSQL", "Railway", "Vercel"],
-    live: "https://zipforgex.in",
-    github: "",
-    img: "/projects/zipforgex.in.png",
-  },
-  {
-    tag: "Machine Learning",
-    title: "Customer Churn Prediction with Explainable AI",
-    problem: "Businesses can't identify which customers are about to leave until it's too late.",
-    impact: "~81% accuracy. Interactive Streamlit dashboard for non-technical business users.",
-    tech: ["Python", "XGBoost", "SHAP", "scikit-learn", "Streamlit"],
-    live: "",
-    github: "https://github.com/Narendran-ds/Customer-churn-prediction-with-XAI-",
-    img: "/projects/churn.png",
-  },
-  {
-    tag: "NLP + ML",
-    title: "Political Sentiment Dashboard",
-    problem: "Tracking public sentiment on geopolitical events across thousands of tweets is impossible manually.",
-    impact: "6-tab Streamlit dashboard. 78.75% SVM accuracy on Ukraine-Russia war tweet dataset.",
-    tech: ["Python", "scikit-learn", "NLTK", "SHAP", "Tweepy"],
-    live: "",
-    github: "https://github.com/Narendran-ds/Political-Sentiment-Analysis",
-    img: "/projects/sentiment.png",
-  },
-  {
-    tag: "Deep Learning",
-    title: "English-to-French NMT",
-    problem: "Understanding how neural translation works requires building from scratch — not using APIs.",
-    impact: "No pretrained models. Full custom PyTorch seq2seq transformer architecture.",
-    tech: ["Python", "PyTorch", "Transformer", "seq2seq"],
-    live: "",
-    github: "https://github.com/Narendran-ds/english-french-nmt.git",
-    img: "/projects/nmt.png",
-  },
-  {
-    tag: "AI · Internship @ Syncorb",
-    title: "BizOp Analytica",
-    problem: "Restaurant menu data is locked in images — impossible to analyze at scale.",
-    impact: "Built during internship at Syncorb Geotech. Production-grade pipeline with real client data.",
-    tech: ["Gemini API", "PaddleOCR", "Python", "FastAPI"],
-    live: "",
-    github: "",
-    img: "/projects/bizop.png",
-  },
-  {
-    tag: "Data Engineering",
-    title: "Retail Sales Pipeline",
-    problem: "Raw sales CSVs are messy and impossible to visualize without significant preprocessing.",
-    impact: "5 advanced Plotly charts: choropleth, 3D scatter, waterfall, violin, heatmap.",
-    tech: ["Python", "Pandas", "Plotly", "Parquet"],
-    live: "",
-    github: "https://github.com/Narendran-ds/retail-sales-2019-pipeline",
-    img: "/projects/retail.png",
-  },
-];
-
-const looped = [...projects, ...projects, ...projects];
-const CARD_W = 380;
-const GAP = 24;
-const TOTAL_W = projects.length * (CARD_W + GAP);
-
+/**
+ * Alche-style showcase: the section pins, and vertical scroll flips through
+ * the featured works one by one — cover on the right, meta on the left.
+ */
 export default function Projects() {
-  const ref = useRef<HTMLElement>(null);
-  const [vis, setVis] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const offsetRef = useRef(TOTAL_W);
-  const animRef = useRef<number>();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const dragStartOffset = useRef(0);
-  const velocity = useRef(0);
-  const lastX = useRef(0);
-  const lastTime = useRef(0);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.05 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
+    let rafId = 0;
+    const update = () => {
+      const pin = pinRef.current;
+      if (!pin) return;
+      const scrollable = pin.offsetHeight - window.innerHeight;
+      const p = Math.max(0, Math.min(1, (window.scrollY - pin.offsetTop) / scrollable));
+      const idx = Math.min(
+        featuredProjects.length - 1,
+        Math.floor(p * featuredProjects.length)
+      );
+      setActive((prev) => (prev === idx ? prev : idx));
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
-  const clamp = (val: number) => {
-    if (val < TOTAL_W * 0.5) return val + TOTAL_W;
-    if (val > TOTAL_W * 2.5) return val - TOTAL_W;
-    return val;
-  };
-
-  const applyOffset = (val: number) => {
-    const clamped = clamp(val);
-    offsetRef.current = clamped;
-    if (trackRef.current) trackRef.current.style.transform = `translateX(-${clamped}px)`;
-  };
-
-  useEffect(() => {
-    const speed = 1;
-    const step = () => {
-      if (!paused && !isDragging.current) {
-        applyOffset(offsetRef.current + speed);
-      }
-      animRef.current = requestAnimationFrame(step);
-    };
-    animRef.current = requestAnimationFrame(step);
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
-  }, [paused]);
-
-  const onMouseDown = (e: React.MouseEvent) => {
-    isDragging.current = true;
-    dragStartX.current = e.clientX;
-    dragStartOffset.current = offsetRef.current;
-    lastX.current = e.clientX;
-    lastTime.current = Date.now();
-    velocity.current = 0;
-    if (wrapRef.current) wrapRef.current.style.cursor = "grabbing";
-  };
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const now = Date.now();
-    const dt = now - lastTime.current;
-    const dx = e.clientX - lastX.current;
-    if (dt > 0) velocity.current = dx / dt;
-    lastX.current = e.clientX;
-    lastTime.current = now;
-    const delta = e.clientX - dragStartX.current;
-    applyOffset(dragStartOffset.current - delta);
-  };
-
-  const onMouseUp = () => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    if (wrapRef.current) wrapRef.current.style.cursor = "grab";
-    let v = -velocity.current * 12;
-    const fling = () => {
-      if (Math.abs(v) < 0.1) return;
-      applyOffset(offsetRef.current + v);
-      v *= 0.93;
-      requestAnimationFrame(fling);
-    };
-    requestAnimationFrame(fling);
-  };
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    isDragging.current = true;
-    dragStartX.current = e.touches[0].clientX;
-    dragStartOffset.current = offsetRef.current;
-    lastX.current = e.touches[0].clientX;
-    lastTime.current = Date.now();
-    velocity.current = 0;
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging.current) return;
-    const now = Date.now();
-    const dt = now - lastTime.current;
-    const dx = e.touches[0].clientX - lastX.current;
-    if (dt > 0) velocity.current = dx / dt;
-    lastX.current = e.touches[0].clientX;
-    lastTime.current = now;
-    const delta = e.touches[0].clientX - dragStartX.current;
-    applyOffset(dragStartOffset.current - delta);
-  };
-
-  const onTouchEnd = () => {
-    isDragging.current = false;
-    let v = -velocity.current * 12;
-    const fling = () => {
-      if (Math.abs(v) < 0.1) return;
-      applyOffset(offsetRef.current + v);
-      v *= 0.93;
-      requestAnimationFrame(fling);
-    };
-    requestAnimationFrame(fling);
-  };
-
-  const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    applyOffset(offsetRef.current + e.deltaX + e.deltaY * 0.5);
-  };
+  const p = featuredProjects[active];
 
   return (
-    <section id="work" ref={ref} data-scan-section style={{ background: BG, padding: "7rem 0" }}>
+    <section id="work" style={{ background: "var(--paper)", paddingTop: "clamp(6rem, 10vw, 9rem)" }}>
       {/* Header */}
-      <div style={{ padding: "0 6vw", maxWidth: 1200, margin: "0 auto 4rem" }}>
-        <div style={{ opacity: vis ? 1 : 0, transition: "opacity 0.6s" }}>
-          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1rem" }}>Selected Work</div>
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-            <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: TEXT }}>Projects</h2>
-            <p style={{ fontSize: "0.85rem", color: MUTED, fontStyle: "italic" }}>Drag or scroll to explore →</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Carousel */}
-      <div
-        ref={wrapRef}
-        style={{ overflow: "hidden", width: "100%", cursor: "grab", userSelect: "none" }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => { setPaused(false); if (!isDragging.current) isDragging.current = false; onMouseUp(); }}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        onWheel={onWheel}
-      >
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 4vw" }}>
         <div
-          ref={trackRef}
+          className="mono"
           style={{
             display: "flex",
-            gap: GAP,
-            width: "max-content",
-            transform: `translateX(-${TOTAL_W}px)`,
-            willChange: "transform",
-            paddingBottom: 8,
+            justifyContent: "space-between",
+            borderTop: "1px solid var(--line)",
+            paddingTop: "1.2rem",
+            fontSize: "0.68rem",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "var(--ink-faint)",
           }}
         >
-          {looped.map((p, i) => (
-            <div
-              key={`${p.title}-${i}`}
-              data-cursor="card"
-              style={{
-                width: CARD_W,
-                flexShrink: 0,
-                border: `1px solid ${BORDER}`,
-                borderRadius: 20,
-                overflow: "hidden",
-                background: CARD,
-                display: "flex",
-                flexDirection: "column",
-                transition: "border-color 0.3s",
-                pointerEvents: "all",
-              }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(249,115,22,0.4)")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}
-            >
-              {/* Screenshot */}
-              <div style={{ height: 200, position: "relative", overflow: "hidden", flexShrink: 0 }}>
-                <Image src={p.img} alt={p.title} fill style={{ objectFit: "cover", objectPosition: "top" }} draggable={false} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 35%, rgba(20,12,5,0.97) 100%)" }} />
-                <div style={{ position: "absolute", bottom: 14, left: 16, right: 16 }}>
-                  <div style={{ fontSize: "0.58rem", color: ACCENT, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.3rem" }}>{p.tag}</div>
-                  <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "#fff", lineHeight: 1.2 }}>{p.title}</div>
-                </div>
-              </div>
-
-              {/* Body */}
-              <div style={{ padding: "1.25rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                <div>
-                  <div style={{ fontSize: "0.58rem", letterSpacing: "0.18em", color: ACCENT, textTransform: "uppercase", marginBottom: "0.3rem" }}>Problem</div>
-                  <p style={{ fontSize: "0.82rem", color: MUTED, lineHeight: 1.65 }}>{p.problem}</p>
-                </div>
-                <div>
-                  <div style={{ fontSize: "0.58rem", letterSpacing: "0.18em", color: ACCENT, textTransform: "uppercase", marginBottom: "0.3rem" }}>Impact</div>
-                  <p style={{ fontSize: "0.82rem", color: MUTED, lineHeight: 1.65 }}>{p.impact}</p>
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "auto", paddingTop: "0.5rem" }}>
-                  {p.tech.map(t => (
-                    <span key={t} style={{ fontSize: "0.65rem", padding: "0.2rem 0.55rem", borderRadius: 999, border: `1px solid rgba(253,186,116,0.2)`, color: ACCENT2 }}>{t}</span>
-                  ))}
-                </div>
-
-                {(p.live || p.github) && (
-                  <div style={{ display: "flex", gap: "0.5rem", paddingTop: "0.25rem" }}>
-                    {p.live && (
-                      <a href={p.live} target="_blank" rel="noopener noreferrer"
-                        onMouseDown={e => e.stopPropagation()}
-                        style={{ flex: 1, padding: "0.55rem", background: ACCENT, borderRadius: 8, color: "#0A0A0A", fontWeight: 700, fontSize: "0.78rem", textDecoration: "none", textAlign: "center" }}>
-                        View Live ↗
-                      </a>
-                    )}
-                    {p.github && (
-                      <a href={p.github} target="_blank" rel="noopener noreferrer"
-                        onMouseDown={e => e.stopPropagation()}
-                        style={{ flex: 1, padding: "0.55rem", border: `1px solid ${BORDER}`, borderRadius: 8, color: ACCENT, fontSize: "0.78rem", textDecoration: "none", textAlign: "center" }}>
-                        GitHub
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+          <span style={{ color: "var(--accent)" }}>( 03 )</span>
+          <span>Selected work</span>
+          <Link href="/works" className="sweep-link" style={{ color: "var(--ink)", textDecoration: "none" }}>
+            All works ↗
+          </Link>
         </div>
       </div>
 
-      {/* Edge fades */}
-      <div style={{ position: "relative", pointerEvents: "none", marginTop: -420, height: 420 }}>
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 100, background: "linear-gradient(to right, #060a10, transparent)", zIndex: 2 }} />
-        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 100, background: "linear-gradient(to left, #060a10, transparent)", zIndex: 2 }} />
+      {/* Pinned showcase */}
+      <div ref={pinRef} style={{ height: `${featuredProjects.length * 85}vh`, position: "relative" }}>
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "hidden",
+            display: "grid",
+            gridTemplateColumns: "1fr 1.25fr",
+            alignItems: "center",
+            gap: "clamp(1.5rem, 3vw, 4rem)",
+            padding: "0 4vw",
+            maxWidth: 1500,
+            margin: "0 auto",
+          }}
+          className="showcase-grid"
+        >
+          {/* Meta — left */}
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div className="mono" style={{ fontSize: "0.68rem", letterSpacing: "0.2em", color: "var(--ink-faint)", marginBottom: "1.1rem", textTransform: "uppercase" }}>
+              {p.date}
+              <span style={{ margin: "0 0.9rem", color: "var(--accent)" }}>
+                {String(active + 1).padStart(2, "0")} / {String(featuredProjects.length).padStart(2, "0")}
+              </span>
+            </div>
+
+            {/* keyed so it re-animates on change */}
+            <div key={p.slug} style={{ animation: `showcaseIn 0.6s ${EASE} both` }}>
+              <h3 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.4rem)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.02, color: "var(--ink)", marginBottom: "1rem" }}>
+                {p.title}
+              </h3>
+              <p style={{ fontSize: "clamp(0.95rem, 1.2vw, 1.1rem)", color: "var(--ink-soft)", lineHeight: 1.7, fontWeight: 300, maxWidth: "44ch", marginBottom: "1.2rem" }}>
+                {p.oneLiner}
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.6rem" }}>
+                {p.tags.map((t) => (
+                  <span key={t} className="mono" style={{ fontSize: "0.62rem", letterSpacing: "0.08em", padding: "0.3rem 0.75rem", borderRadius: 4, border: "1px solid var(--line)", color: "var(--ink-soft)" }}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <Link
+                href={`/works/${p.slug}`}
+                className="mono sweep-link"
+                style={{ fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink)", textDecoration: "none" }}
+              >
+                View project →
+              </Link>
+            </div>
+
+            {/* step indicator */}
+            <div style={{ display: "flex", gap: "0.45rem", marginTop: "2.4rem" }}>
+              {featuredProjects.map((fp, i) => (
+                <span
+                  key={fp.slug}
+                  style={{
+                    width: i === active ? 26 : 8,
+                    height: 3,
+                    background: i === active ? "var(--accent)" : "var(--line)",
+                    transition: `all 0.5s ${EASE}`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Cover stack — right */}
+          <Link href={`/works/${p.slug}`} aria-label={p.title} className="showcase-cover" style={{ position: "relative", display: "block", aspectRatio: "16 / 10", maxHeight: "72vh", width: "100%" }}>
+            {featuredProjects.map((fp, i) => (
+              <div
+                key={fp.slug}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  borderRadius: "1.2rem",
+                  overflow: "hidden",
+                  opacity: i === active ? 1 : 0,
+                  transform: i === active ? "scale(1)" : i < active ? "scale(0.96) translateY(-2%)" : "scale(0.96) translateY(2%)",
+                  transition: `opacity 0.55s ${EASE}, transform 0.7s ${EASE}`,
+                  boxShadow: i === active ? "0 30px 80px -30px rgba(23,19,16,0.35)" : "none",
+                }}
+              >
+                <ProjectCover project={fp} index={i} />
+              </div>
+            ))}
+          </Link>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes showcaseIn {
+          from { opacity: 0; transform: translateY(22px); }
+          to { opacity: 1; transform: none; }
+        }
+        @media (max-width: 860px) {
+          .showcase-grid {
+            grid-template-columns: 1fr !important;
+            align-content: center;
+            gap: 1.5rem !important;
+          }
+          .showcase-cover { order: -1; max-height: 38vh !important; }
+        }
+      `}</style>
     </section>
   );
 }

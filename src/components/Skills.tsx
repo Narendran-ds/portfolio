@@ -1,11 +1,10 @@
 "use client";
-
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { useReveal, EASE } from "./useReveal";
 
 type Capability = {
-  icon: string;
+  index: string;
   title: string;
-  tagline: string;
   description: string;
   tech: string[];
   proof: string;
@@ -13,202 +12,155 @@ type Capability = {
 
 const capabilities: Capability[] = [
   {
-    icon: "⬡",
-    title: "Full Stack Development",
-    tagline: "From auth to deploy — no gaps.",
+    index: "01",
+    title: "Full-Stack Engineering",
     description:
-      "I architect and ship complete web applications — Spring Boot APIs, React frontends, JWT & OAuth2 auth, PostgreSQL schemas, and production CI/CD. A coherent system, not stitched-together tutorials.",
-    tech: ["Spring Boot", "React", "PostgreSQL", "JWT", "OAuth2", "Vercel"],
-    proof: "ZipForgeX — live on zipforgex.in with real users.",
+      "Complete web applications — Spring Boot APIs, React frontends, JWT & OAuth2 auth, PostgreSQL schemas, CI/CD to production. One coherent system, not stitched-together tutorials.",
+    tech: ["Spring Boot", "React", "PostgreSQL", "OAuth2", "Vercel", "Railway"],
+    proof: "ZipForgeX — live at zipforgex.in with real users",
   },
   {
-    icon: "◈",
-    title: "AI & ML Engineering",
-    tagline: "Models that explain their decisions.",
+    index: "02",
+    title: "Machine Learning",
     description:
-      "End-to-end ML pipelines: feature engineering, model selection, hyperparameter tuning, SHAP explainability, and Streamlit dashboards that turn predictions into business decisions.",
+      "End-to-end pipelines: feature engineering, model selection, tuning, and SHAP explainability — turned into dashboards a non-technical stakeholder can actually use.",
     tech: ["PyTorch", "XGBoost", "scikit-learn", "SHAP", "Streamlit", "Pandas"],
-    proof: "89% churn accuracy — with full SHAP explainability.",
+    proof: "81% churn accuracy, every prediction explained",
   },
   {
-    icon: "⟐",
-    title: "LLM & GenAI Pipelines",
-    tagline: "Production-grade AI, not just prompts.",
+    index: "03",
+    title: "LLM & Vision Pipelines",
     description:
-      "LLM-driven data pipelines using Gemini API, RAG architectures, and PaddleOCR. At Syncorb I replaced 5 broken scrapers with a single AI workflow generating 500+ cuisines at scale.",
-    tech: ["Gemini API", "PaddleOCR", "FastAPI", "RAG", "NVIDIA NIM", "Prompt Eng."],
-    proof: "Deployed in production at Syncorb Geotech internship.",
+      "Production GenAI systems — Gemini-driven data generation, PaddleOCR extraction, YOLOv8 detection with deterministic reasoning layers that keep every decision traceable.",
+    tech: ["Gemini API", "PaddleOCR", "YOLOv8", "FastAPI", "ByteTrack"],
+    proof: "Deployed at Syncorb Geotech; 58 tests on ChainSight",
   },
   {
-    icon: "⌬",
-    title: "Developer Tooling & Infra",
-    tagline: "Tools built to survive 2 AM.",
+    index: "04",
+    title: "Infra & Tooling",
     description:
-      "Developer productivity tools backed by real infrastructure — Cloudflare DNS, Render backends, Supabase databases, Vercel frontends. Reliable, observable, and built to scale.",
-    tech: ["Cloudflare", "Render", "Supabase", "Docker", "Maven", "CI/CD"],
-    proof: "zipforgex.in — custom domain, history tracking, live.",
+      "The unglamorous parts that make products real: Cloudflare DNS, Render backends, Supabase, Docker, history-tracking batch systems that survive reruns at 2 AM.",
+    tech: ["Cloudflare", "Docker", "Supabase", "Render", "Maven", "Git"],
+    proof: "Custom domains, batch reliability, zero babysitting",
   },
 ];
 
-export default function CapabilitiesSection() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const handleMouseEnter = (i: number) => {
-    setActiveIndex(i);
-    const card = cardRefs.current[i];
-    if (!card) return;
-    const r = card.getBoundingClientRect();
-    const popupH = 270;
-    const spaceBelow = window.innerHeight - r.bottom;
-    const top = spaceBelow > popupH + 16 ? r.bottom + 14 : r.top - popupH - 14;
-    const left = Math.min(Math.max(r.left + r.width / 2 - 190, 16), window.innerWidth - 396);
-    setPopupStyle({ top, left });
-  };
-
-  const active = activeIndex !== null ? capabilities[activeIndex] : null;
+export default function Skills() {
+  const { ref, vis } = useReveal<HTMLElement>();
+  const [active, setActive] = useState<number | null>(null);
 
   return (
     <section
-      id="capabilities"
-      data-scan-section      /* ← triggers full-section scan on cursor entry */
-      style={{
-        padding: "100px 0",
-        maxWidth: "1200px",
-        margin: "0 auto",
-        paddingLeft: "32px",
-        paddingRight: "32px",
-      }}
+      ref={ref}
+      style={{ background: "var(--paper)", padding: "clamp(6rem, 10vw, 9rem) 4vw" }}
     >
-      {/* Label */}
-      <p style={{
-        fontSize: "11px", letterSpacing: "0.22em",
-        textTransform: "uppercase", color: "rgba(255,255,255,0.3)",
-        marginBottom: "14px", fontFamily: "monospace",
-      }}>
-        Capabilities
-      </p>
+      <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div
+          className="mono"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            borderTop: "1px solid var(--line)",
+            paddingTop: "1.2rem",
+            marginBottom: "clamp(3rem, 6vw, 5rem)",
+            fontSize: "0.68rem",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "var(--ink-faint)",
+          }}
+        >
+          <span style={{ color: "var(--accent)" }}>( 02 )</span>
+          <span>Capabilities</span>
+          <span>What I&apos;m good at</span>
+        </div>
 
-      <h2 style={{
-        fontSize: "clamp(32px, 4.5vw, 52px)",
-        fontWeight: 700, color: "#fff",
-        marginBottom: "10px", lineHeight: 1.1,
-      }}>
-        What I Build
-      </h2>
-      <p style={{
-        fontSize: "16px", color: "rgba(255,255,255,0.4)",
-        marginBottom: "56px", maxWidth: "480px", lineHeight: 1.6,
-      }}>
-        End-to-end. From model to migration, from prompt to production.
-      </p>
+        <div>
+          {capabilities.map((cap, i) => {
+            const isActive = active === i;
+            return (
+              <div
+                key={cap.index}
+                onMouseEnter={() => setActive(i)}
+                onMouseLeave={() => setActive(null)}
+                style={{
+                  borderTop: "1px solid var(--line)",
+                  padding: "clamp(1.8rem, 3vw, 2.6rem) 0",
+                  display: "grid",
+                  gridTemplateColumns: "80px 1.1fr 1fr",
+                  gap: "clamp(1rem, 3vw, 3rem)",
+                  alignItems: "start",
+                  opacity: vis ? 1 : 0,
+                  transform: vis ? "none" : "translateY(36px)",
+                  transition: `opacity 0.9s ${EASE} ${i * 0.1}s, transform 0.9s ${EASE} ${i * 0.1}s, background 0.5s ${EASE}`,
+                  background: isActive ? "var(--paper-2)" : "transparent",
+                  cursor: "default",
+                }}
+                className="cap-row"
+              >
+                <span
+                  className="mono"
+                  style={{
+                    fontSize: "0.72rem",
+                    letterSpacing: "0.2em",
+                    color: isActive ? "var(--accent)" : "var(--ink-faint)",
+                    paddingTop: "0.8rem",
+                    transition: `color 0.4s ${EASE}`,
+                  }}
+                >
+                  /{cap.index}
+                </span>
 
-      {/* Grid — bigger cards */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-        gap: "18px",
-      }}>
-        {capabilities.map((cap, i) => {
-          const isActive = activeIndex === i;
-          return (
-            <div
-              key={i}
-              ref={(el) => { cardRefs.current[i] = el; }}
-              data-cursor="card"                         /* triggers bracket scanner */
-              onMouseEnter={() => handleMouseEnter(i)}
-              onMouseLeave={() => setActiveIndex(null)}
-              style={{
-                position: "relative",
-                padding: "36px 28px",
-                minHeight: "220px",
-                borderRadius: "12px",
-                border: isActive
-                  ? "1px solid rgba(201,168,76,0.5)"
-                  : "1px solid rgba(255,255,255,0.07)",
-                background: isActive
-                  ? "rgba(201,168,76,0.04)"
-                  : "rgba(255,255,255,0.02)",
-                transition: "border-color 0.22s ease, background 0.22s ease, transform 0.22s ease",
-                transform: isActive ? "translateY(-4px)" : "translateY(0)",
-                display: "flex",
-                flexDirection: "column",
-                gap: "14px",
-              }}
-            >
-              {/* Icon */}
-              <div style={{
-                fontSize: "26px",
-                color: isActive ? "#c9a84c" : "rgba(255,255,255,0.35)",
-                transition: "color 0.22s ease",
-              }}>
-                {cap.icon}
+                <h3
+                  className="display"
+                  style={{
+                    fontSize: "clamp(1.7rem, 3.6vw, 3.2rem)",
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1.05,
+                    color: "var(--ink)",
+                    transform: isActive ? "translateX(10px)" : "none",
+                    transition: `transform 0.5s ${EASE}`,
+                  }}
+                >
+                  {cap.title}
+                </h3>
+
+                <div>
+                  <p style={{ fontSize: "0.95rem", color: "var(--ink-soft)", lineHeight: 1.75, fontWeight: 300, marginBottom: "1.1rem" }}>
+                    {cap.description}
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.9rem" }}>
+                    {cap.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="mono"
+                        style={{
+                          fontSize: "0.62rem",
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          padding: "0.3rem 0.75rem",
+                          borderRadius: 999,
+                          border: "1px solid var(--line)",
+                          color: isActive ? "var(--ink)" : "var(--ink-faint)",
+                          transition: `color 0.4s ${EASE}`,
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mono" style={{ fontSize: "0.68rem", letterSpacing: "0.08em", color: "var(--accent)" }}>
+                    → {cap.proof}
+                  </p>
+                </div>
               </div>
-
-              {/* Title */}
-              <h3 style={{
-                fontSize: "18px", fontWeight: 700,
-                color: isActive ? "#fff" : "rgba(255,255,255,0.85)",
-                lineHeight: 1.25, transition: "color 0.2s ease",
-              }}>
-                {cap.title}
-              </h3>
-
-              {/* Tagline */}
-              <p style={{
-                fontSize: "13.5px", fontStyle: "italic",
-                color: isActive ? "rgba(201,168,76,0.8)" : "rgba(255,255,255,0.38)",
-                lineHeight: 1.5, transition: "color 0.22s ease",
-              }}>
-                {cap.tagline}
-              </p>
-
-              {/* Description — always visible, slightly dimmed when not active */}
-              <p style={{
-                fontSize: "13px",
-                color: isActive ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.28)",
-                lineHeight: 1.65,
-                transition: "color 0.3s ease",
-                flex: 1,
-              }}>
-                {cap.description}
-              </p>
-
-              {/* Tech pills — shown when active */}
-              <div style={{
-                display: "flex", flexWrap: "wrap", gap: "6px",
-                opacity: isActive ? 1 : 0,
-                transition: "opacity 0.25s ease",
-              }}>
-                {cap.tech.map((t) => (
-                  <span key={t} style={{
-                    fontSize: "11px", padding: "3px 10px", borderRadius: "20px",
-                    border: "1px solid rgba(201,168,76,0.25)",
-                    color: "rgba(201,168,76,0.8)",
-                    background: "rgba(201,168,76,0.06)",
-                    letterSpacing: "0.03em",
-                  }}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* Proof line */}
-              <div style={{
-                borderTop: "1px solid rgba(255,255,255,0.06)",
-                paddingTop: "10px",
-                fontSize: "11.5px",
-                color: isActive ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)",
-                fontStyle: "italic",
-                transition: "color 0.25s ease",
-              }}>
-                ▹ {cap.proof}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+          <div style={{ borderTop: "1px solid var(--line)" }} />
+        </div>
       </div>
+
+      <style>{`@media(max-width:860px){.cap-row{grid-template-columns:1fr!important}}`}</style>
     </section>
   );
 }

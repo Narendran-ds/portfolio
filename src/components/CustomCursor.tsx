@@ -19,9 +19,9 @@ export default function CustomCursor() {
   const [scanActive,  setScanActive] = useState(false);
   const activeCardRef = useRef<HTMLElement | null>(null);
 
-  const GOLD     = "#c9a84c";
-  const GOLD_DIM = "rgba(201,168,76,0.45)";
-  const WHITE    = "rgba(255,255,255,0.55)";
+  const GOLD     = "#E8500A";
+  const GOLD_DIM = "rgba(232,80,10,0.45)";
+  const WHITE    = "rgba(242,238,227,0.9)";
 
   const updateCardRect = useCallback(() => {
     if (activeCardRef.current) {
@@ -119,6 +119,7 @@ export default function CustomCursor() {
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.2s ease",
           willChange: "transform",
+          mixBlendMode: state === "default" ? "difference" : "normal",
         }}
       >
         <svg

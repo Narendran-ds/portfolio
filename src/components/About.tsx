@@ -1,102 +1,152 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
-
-const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
-const CARD = "rgba(15,13,10,0.8)";
-const ACCENT = "#F97316";
-const ACCENT2 = "#FDBA74";
-const BORDER = "rgba(249,115,22,0.15)";
-const TEXT = "#FAFAFA";
-const MUTED = "rgba(250,250,250,0.45)";
+import { useReveal, EASE } from "./useReveal";
 
 const stats = [
-  { value: "6+", label: "Projects Shipped" },
-  { value: "1",  label: "Live Product" },
-  { value: "3rd", label: "Year B.Tech" },
+  { value: "14", label: "Public repos" },
+  { value: "01", label: "Live product" },
+  { value: "500+", label: "Cuisines pipelined at Syncorb" },
   { value: "2027", label: "Graduating" },
 ];
 
+const statementLines: React.ReactNode[] = [
+  <>Most student projects <span className="serif" style={{ color: "var(--accent)" }}>die</span> in</>,
+  <>a notebook. Mine run in <span className="serif" style={{ color: "var(--accent)" }}>production</span> —</>,
+  <>with users, auth, and uptime to answer for.</>,
+];
+
 export default function About() {
-  const ref = useRef<HTMLElement>(null);
-  const [vis, setVis] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVis(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
+  const { ref, vis } = useReveal<HTMLElement>();
 
   return (
-    <section id="about" ref={ref} style={{ background: BG, padding: "8rem 6vw" }}>
-      <div
-        style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem", alignItems: "center" }}
-        className="about-grid"
-      >
-        {/* ── Left: text ── */}
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(40px)", transition: "all 0.8s ease" }}>
-          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>About Me</div>
-          <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: TEXT, lineHeight: 1.2, marginBottom: "0.5rem" }}>
-            I don&apos;t just learn AI —
-          </h2>
-          <div style={{ width: 40, height: 2, background: `linear-gradient(90deg,${ACCENT},${ACCENT2})`, marginBottom: "0.75rem", borderRadius: 1 }} />
-          <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: ACCENT, marginBottom: "1.5rem" }}>I ship it.</h2>
-          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "1rem" }}>
-            I&apos;m Narendran L — a third-year AI &amp; Data Science student at Rajalakshmi Institute of Technology, Chennai. While most students build tutorial projects, I build things people actually use.
-          </p>
-          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "1rem" }}>
-            <strong style={{ color: TEXT }}>ZipForgeX</strong> is live with real users. <strong style={{ color: TEXT }}>BizOp Analytica</strong> was built during my internship at Syncorb Geotech. I bridge the gap between ML research and production engineering.
-          </p>
-          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.9, marginBottom: "2rem" }}>
-            Beyond writing code, I&apos;m fluent in the <strong style={{ color: TEXT }}>AI tooling ecosystem</strong> — using AI-assisted workflows to design, build, and ship production-ready products significantly faster than conventional development cycles.
-          </p>
-          <p style={{ fontSize: "0.9rem", color: ACCENT2, fontStyle: "italic", marginBottom: "2.5rem", borderLeft: `2px solid ${ACCENT}`, paddingLeft: "1rem" }}>
-            Aspiring SDE &amp; ML Engineer building intelligent, real-world applications.
-          </p>
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <a href="https://linkedin.com/in/narendran-l1125" target="_blank" rel="noopener noreferrer" style={{ padding: "0.7rem 1.8rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "0.88rem", textDecoration: "none", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>LinkedIn ↗</a>
-            <a href="https://github.com/Narendran-ds" target="_blank" rel="noopener noreferrer" style={{ padding: "0.7rem 1.8rem", border: `1px solid ${BORDER}`, borderRadius: 999, color: ACCENT, fontSize: "0.88rem", textDecoration: "none" }}>GitHub</a>
-            <a href="/Narendran_L_resume.pdf" target="_blank" rel="noopener noreferrer" style={{ padding: "0.7rem 1.8rem", border: "1px solid rgba(250,250,250,0.1)", borderRadius: 999, color: MUTED, fontSize: "0.88rem", textDecoration: "none" }}>Resume ↗</a>
-          </div>
+    <section
+      id="about"
+      ref={ref}
+      style={{ background: "var(--paper)", padding: "clamp(7rem, 12vw, 11rem) 4vw", position: "relative" }}
+    >
+      <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        {/* Section marker */}
+        <div
+          className="mono"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            borderTop: "1px solid var(--line)",
+            paddingTop: "1.2rem",
+            marginBottom: "clamp(3rem, 6vw, 5rem)",
+            fontSize: "0.68rem",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "var(--ink-faint)",
+          }}
+        >
+          <span style={{ color: "var(--accent)" }}>( 01 )</span>
+          <span>About</span>
+          <span>Chennai — India</span>
         </div>
 
-        {/* ── Right: stat cards + internship card ── */}
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(40px)", transition: "all 0.8s ease 0.2s" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "1.5rem" }}>
+        {/* Big statement — staggered line reveal */}
+        <h2
+          className="display"
+          style={{
+            fontSize: "clamp(1.9rem, 4.6vw, 4.4rem)",
+            fontWeight: 800,
+            lineHeight: 1.08,
+            letterSpacing: "-0.01em",
+            color: "var(--ink)",
+            maxWidth: "24ch",
+            textTransform: "uppercase",
+            marginBottom: "clamp(4rem, 7vw, 6rem)",
+          }}
+        >
+          {statementLines.map((line, i) => (
+            <span key={i} style={{ display: "block", overflow: "hidden" }}>
+              <span
+                style={{
+                  display: "block",
+                  transform: vis ? "none" : "translateY(110%)",
+                  transition: `transform 1s ${EASE} ${0.1 + i * 0.12}s`,
+                }}
+              >
+                {line}
+              </span>
+            </span>
+          ))}
+        </h2>
+
+        {/* Split: bio left, stats right */}
+        <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "clamp(3rem, 6vw, 7rem)", alignItems: "start" }}>
+          <div
+            style={{
+              opacity: vis ? 1 : 0,
+              transform: vis ? "none" : "translateY(30px)",
+              transition: `all 1s ${EASE} 0.35s`,
+            }}
+          >
+            <p style={{ fontSize: "clamp(1rem, 1.25vw, 1.15rem)", color: "var(--ink-soft)", lineHeight: 1.85, marginBottom: "1.4rem", fontWeight: 300 }}>
+              I&apos;m Narendran — a final-year AI &amp; Data Science student at Rajalakshmi
+              Institute of Technology, Chennai. My live product, <strong style={{ fontWeight: 500, color: "var(--ink)" }}>ZipForgeX</strong>,
+              runs at zipforgex.in with real users, OAuth2 and a custom domain. At my
+              internship with <strong style={{ fontWeight: 500, color: "var(--ink)" }}>Syncorb Geotech</strong> I replaced five broken scrapers
+              with one Gemini-driven pipeline and rebuilt their OCR menu-extraction system from scratch.
+            </p>
+            <p style={{ fontSize: "clamp(1rem, 1.25vw, 1.15rem)", color: "var(--ink-soft)", lineHeight: 1.85, marginBottom: "2.5rem", fontWeight: 300 }}>
+              The through-line in my work: systems you can trust. SHAP explanations on
+              every churn prediction, deterministic rule engines over black-box guesses,
+              58 passing tests on my safety-vision pipeline. If I can&apos;t explain it,
+              I don&apos;t ship it.
+            </p>
+
+            <div style={{ display: "flex", gap: "1.75rem", flexWrap: "wrap" }}>
+              {[
+                { label: "LinkedIn", href: "https://linkedin.com/in/narendran-l1125" },
+                { label: "GitHub", href: "https://github.com/Narendran-ds" },
+                { label: "Resume", href: "/Narendran_L_resume.pdf" },
+              ].map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mono sweep-link"
+                  style={{ fontSize: "0.75rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink)" }}
+                >
+                  {l.label} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats — ruled rows, not cards */}
+          <div>
             {stats.map((s, i) => (
               <div
                 key={s.label}
-                data-cursor="card"
                 style={{
-                  padding: "2rem",
-                  border: `1px solid ${BORDER}`,
-                  borderRadius: 16,
-                  background: CARD,
+                  display: "flex",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  gap: "1.5rem",
+                  padding: "1.4rem 0",
+                  borderTop: "1px solid var(--line)",
                   opacity: vis ? 1 : 0,
-                  transform: vis ? "none" : "translateY(20px)",
-                  transition: `all 0.6s ease ${0.3 + i * 0.1}s`,
+                  transform: vis ? "none" : "translateY(24px)",
+                  transition: `all 0.9s ${EASE} ${0.4 + i * 0.1}s`,
                 }}
               >
-                <div style={{ fontSize: "2.5rem", fontWeight: 700, color: ACCENT, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: "0.78rem", color: MUTED, marginTop: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>{s.label}</div>
+                <span className="display" style={{ fontSize: "clamp(2.2rem, 3.4vw, 3.2rem)", fontWeight: 800, color: "var(--ink)", lineHeight: 1, letterSpacing: "-0.02em" }}>
+                  {s.value}
+                </span>
+                <span className="mono" style={{ fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink-faint)", textAlign: "right" }}>
+                  {s.label}
+                </span>
               </div>
             ))}
-          </div>
-
-          {/* Internship card */}
-          <div
-            data-cursor="card"
-            style={{ padding: "1.5rem", border: `1px solid rgba(253,186,116,0.15)`, borderRadius: 16, background: CARD }}
-          >
-            <div style={{ fontSize: "0.65rem", letterSpacing: "0.2em", color: ACCENT2, textTransform: "uppercase", marginBottom: "0.5rem" }}>Internship</div>
-            <div style={{ fontSize: "1rem", fontWeight: 600, color: TEXT, marginBottom: "0.25rem" }}>AI Developer Intern</div>
-            <div style={{ fontSize: "0.85rem", color: MUTED }}>Syncorb Geotech Pvt Ltd · 2025</div>
-            <div style={{ fontSize: "0.82rem", color: MUTED, marginTop: "0.5rem", lineHeight: 1.6 }}>Built BizOp Analytica — Gemini API + PaddleOCR pipeline for menu extraction and business analysis.</div>
+            <div style={{ borderTop: "1px solid var(--line)" }} />
           </div>
         </div>
       </div>
-      <style>{`@media(max-width:768px){.about-grid{grid-template-columns:1fr!important;gap:3rem!important}}`}</style>
+
+      <style>{`@media(max-width:860px){.about-grid{grid-template-columns:1fr!important}}`}</style>
     </section>
   );
 }

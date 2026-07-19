@@ -1,94 +1,153 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { useReveal, EASE } from "./useReveal";
 
-const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
-const ACCENT = "#F97316";
-const ACCENT2 = "#FDBA74";
-const BORDER2 = "rgba(253,186,116,0.2)";
-const TEXT = "#FAFAFA";
-const MUTED = "rgba(250,250,250,0.45)";
+type Tool = { name: string; icon: string };
 
-const techGroups = [
-  { category: "Languages",      items: ["Java", "Python", "SQL"] },
-  { category: "Frontend",       items: ["React", "Tailwind CSS"] },
-  { category: "Backend & DB",   items: ["Spring Boot", "PostgreSQL"] },
-  { category: "ML / AI",        items: ["PyTorch", "XGBoost", "scikit-learn", "SHAP", "Gemini API", "PaddleOCR"] },
-  { category: "DevOps & Tools", items: ["Git", "Railway", "Vercel", "Cloudflare", "Maven", "Streamlit"] },
+const row1: Tool[] = [
+  { name: "Java", icon: "openjdk" },
+  { name: "Python", icon: "python" },
+  { name: "TypeScript", icon: "typescript" },
+  { name: "React", icon: "react" },
+  { name: "Spring Boot", icon: "spring" },
+  { name: "PostgreSQL", icon: "postgresql" },
+  { name: "MySQL", icon: "mysql" },
+  { name: "Tailwind CSS", icon: "tailwindcss" },
+  { name: "FastAPI", icon: "fastapi" },
+  { name: "Vercel", icon: "vercel" },
+  { name: "Railway", icon: "railway" },
+  { name: "Cloudflare", icon: "cloudflare" },
 ];
 
+const row2: Tool[] = [
+  { name: "PyTorch", icon: "pytorch" },
+  { name: "scikit-learn", icon: "scikitlearn" },
+  { name: "Pandas", icon: "pandas" },
+  { name: "NumPy", icon: "numpy" },
+  { name: "Streamlit", icon: "streamlit" },
+  { name: "Plotly", icon: "plotly" },
+  { name: "OpenCV", icon: "opencv" },
+  { name: "Gemini", icon: "googlegemini" },
+  { name: "Docker", icon: "docker" },
+  { name: "Git", icon: "git" },
+  { name: "GitHub", icon: "github" },
+  { name: "Maven", icon: "apachemaven" },
+];
+
+const skillGroups = [
+  {
+    title: "Languages",
+    items: ["Java", "Python", "TypeScript", "SQL"],
+  },
+  {
+    title: "Frontend",
+    items: ["React", "Next.js", "Tailwind CSS"],
+  },
+  {
+    title: "Backend & Databases",
+    items: ["Spring Boot", "FastAPI", "PostgreSQL", "MySQL", "Supabase"],
+  },
+  {
+    title: "Machine Learning & AI",
+    items: ["PyTorch", "XGBoost", "scikit-learn", "SHAP", "YOLOv8", "OpenCV", "NLTK", "Gemini API", "PaddleOCR"],
+  },
+  {
+    title: "Data & Visualisation",
+    items: ["Pandas", "NumPy", "Plotly", "Streamlit", "Parquet", "Scrapy"],
+  },
+  {
+    title: "DevOps & Infrastructure",
+    items: ["Git", "Docker", "Vercel", "Railway", "Cloudflare", "Render", "Maven"],
+  },
+];
+
+function LogoRow({ items, reverse }: { items: Tool[]; reverse?: boolean }) {
+  const doubled = [...items, ...items];
+  return (
+    <div style={{ overflow: "hidden", whiteSpace: "nowrap", padding: "1.6rem 0", borderTop: "1px solid var(--line)" }}>
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          animation: `${reverse ? "marqueeRight" : "marqueeLeft"} ${items.length * 3.5}s linear infinite`,
+          willChange: "transform",
+        }}
+      >
+        {doubled.map((t, i) => (
+          <span
+            key={`${t.name}-${i}`}
+            title={t.name}
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.8rem", padding: "0 2.2rem", opacity: 0.85 }}
+          >
+            <img src={`/icons/${t.icon}.svg`} alt={t.name} width={30} height={30} draggable={false} style={{ display: "block" }} />
+            <span className="mono" style={{ fontSize: "0.68rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--ink-faint)" }}>
+              {t.name}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TechStack() {
-  const ref = useRef<HTMLElement>(null);
-  const [vis, setVis] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVis(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
+  const { ref, vis } = useReveal<HTMLElement>(0.08);
 
   return (
-    <section ref={ref} style={{ background: BG, padding: "7rem 6vw" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ opacity: vis ? 1 : 0, transition: "opacity 0.6s", marginBottom: "4rem" }}>
-          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1rem" }}>Technologies</div>
-          <h2 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 700, color: TEXT }}>Tech Stack</h2>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {techGroups.map((g, gi) => (
-            <div
-              key={g.category}
-              data-cursor="card"
-              style={{
-                padding: "1.5rem 2rem",
-                borderRadius: 14,
-                border: "1px solid rgba(253,186,116,0.08)",
-                background: "rgba(253,186,116,0.02)",
-                opacity: vis ? 1 : 0,
-                transform: vis ? "none" : "translateX(-20px)",
-                transition: `all 0.7s ease ${gi * 0.1}s`,
-              }}
-            >
-              <div style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: MUTED, textTransform: "uppercase", marginBottom: "1rem" }}>{g.category}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-                {g.items.map((item, ii) => (
-                  <span
-                    key={item}
-                    style={{
-                      padding: "0.5rem 1.2rem",
-                      border: `1px solid ${BORDER2}`,
-                      borderRadius: 999,
-                      fontSize: "0.88rem",
-                      color: ACCENT2,
-                      background: "rgba(253,186,116,0.04)",
-                      opacity: vis ? 1 : 0,
-                      transform: vis ? "none" : "scale(0.9)",
-                      transition: `all 0.5s ease ${gi * 0.1 + ii * 0.03}s`,
-                      cursor: "default",
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLSpanElement;
-                      el.style.borderColor = ACCENT;
-                      el.style.color = ACCENT;
-                      el.style.background = "rgba(249,115,22,0.1)";
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLSpanElement;
-                      el.style.borderColor = BORDER2;
-                      el.style.color = ACCENT2;
-                      el.style.background = "rgba(253,186,116,0.04)";
-                    }}
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+    <section ref={ref} aria-label="Tech stack" style={{ background: "var(--paper)", padding: "clamp(4rem, 7vw, 6rem) 0 clamp(6rem, 9vw, 8rem)" }}>
+      <div
+        className="mono"
+        style={{
+          maxWidth: 1400,
+          margin: "0 auto 2rem",
+          padding: "0 4vw",
+          fontSize: "0.68rem",
+          letterSpacing: "0.24em",
+          textTransform: "uppercase",
+          color: "var(--ink-faint)",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <span style={{ color: "var(--accent)" }}>( 05 )</span>
+        <span>Stack</span>
+        <span>Tools I reach for</span>
       </div>
+
+      {/* Logo marquees */}
+      <LogoRow items={row1} />
+      <LogoRow items={row2} reverse />
+      <div style={{ borderTop: "1px solid var(--line)" }} />
+
+      {/* Static, readable skills */}
+      <div className="skills-grid" style={{ maxWidth: 1400, margin: "clamp(3.5rem, 6vw, 5rem) auto 0", padding: "0 4vw", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "clamp(2rem, 3.5vw, 3.5rem) clamp(2rem, 4vw, 4rem)" }}>
+        {skillGroups.map((g, gi) => (
+          <div
+            key={g.title}
+            style={{
+              borderTop: "1px solid var(--line)",
+              paddingTop: "1.1rem",
+              opacity: vis ? 1 : 0,
+              transform: vis ? "none" : "translateY(24px)",
+              transition: `all 0.8s ${EASE} ${gi * 0.08}s`,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.9rem" }}>
+              <h3 className="display" style={{ fontSize: "1.05rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "0.01em" }}>
+                {g.title}
+              </h3>
+              <span className="mono" style={{ fontSize: "0.6rem", color: "var(--accent)", letterSpacing: "0.15em" }}>
+                {String(gi + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <p style={{ fontSize: "0.92rem", color: "var(--ink-soft)", fontWeight: 300, lineHeight: 1.9 }}>
+              {g.items.join(" · ")}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <style>{`@media(max-width:900px){.skills-grid{grid-template-columns:1fr 1fr!important}}@media(max-width:600px){.skills-grid{grid-template-columns:1fr!important}}`}</style>
     </section>
   );
 }

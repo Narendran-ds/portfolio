@@ -1,12 +1,6 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
-
-const BG = "radial-gradient(ellipse at 80% 20%, #1f0d00 0%, #0d1117 45%, #060a10 100%)";
-const ACCENT = "#F97316";
-const ACCENT2 = "#FDBA74";
-const BORDER = "rgba(249,115,22,0.15)";
-const TEXT = "#FAFAFA";
-const MUTED = "rgba(250,250,250,0.4)";
+import { useEffect, useState } from "react";
+import { useReveal, EASE } from "./useReveal";
 
 function openMail(subject = "") {
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -22,87 +16,168 @@ function openMail(subject = "") {
 }
 
 export default function Contact() {
-  const ref = useRef<HTMLElement>(null);
-  const [vis, setVis] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const { ref, vis } = useReveal<HTMLElement>(0.15);
+  const [time, setTime] = useState("");
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVis(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) obs.observe(ref.current);
-    setIsMobile(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
-    return () => obs.disconnect();
+    const tick = () =>
+      setTime(
+        new Date().toLocaleTimeString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
+    tick();
+    const id = setInterval(tick, 30000);
+    return () => clearInterval(id);
   }, []);
 
-  const links = [
-    { label: "LinkedIn", href: "https://linkedin.com/in/narendran-l1125", external: true },
-    { label: "GitHub", href: "https://github.com/Narendran-ds", external: true },
-    { label: "narendranlofficial@gmail.com", href: null, onClick: () => openMail(), external: false },
-  ];
-
   return (
-    <section id="contact" ref={ref} style={{ background: BG, padding: "8rem 6vw" }}>
-      {/* data-cursor="card" scopes the scanner to just the content box */}
-      <div
-        data-cursor="card"
-        style={{
-          maxWidth: 700,
-          margin: "0 auto",
-          textAlign: "center",
-          padding: "3rem 2.5rem",
-          borderRadius: 20,
-          border: `1px solid ${BORDER}`,
-          background: "rgba(15,10,5,0.5)",
-        }}
-      >
-        <div style={{ opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(30px)", transition: "all 0.8s ease" }}>
-          <div style={{ fontSize: "0.75rem", letterSpacing: "0.3em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem" }}>Get In Touch</div>
-          <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", fontWeight: 700, color: TEXT, lineHeight: 1.1, marginBottom: "1.5rem" }}>
-            Let&apos;s Build Something <span style={{ color: ACCENT }}>Together</span>
-          </h2>
-          <p style={{ fontSize: "1rem", color: MUTED, lineHeight: 1.8, marginBottom: "3rem" }}>
-            Open to SDE and ML fresher roles, freelance projects, and collaborations.
-          </p>
+    <section
+      id="contact"
+      ref={ref}
+      style={{
+        background: "#171310",
+        color: "#F2EEE3",
+        padding: "clamp(7rem, 12vw, 11rem) 4vw 0",
+        borderRadius: "2.5rem 2.5rem 0 0",
+      }}
+    >
+      <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div
+          className="mono"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            borderTop: "1px solid rgba(242,238,227,0.15)",
+            paddingTop: "1.2rem",
+            marginBottom: "clamp(3rem, 6vw, 5rem)",
+            fontSize: "0.68rem",
+            letterSpacing: "0.24em",
+            textTransform: "uppercase",
+            color: "rgba(242,238,227,0.4)",
+          }}
+        >
+          <span style={{ color: "#E8500A" }}>( 06 )</span>
+          <span>Contact</span>
+          <span>Open to SDE & ML roles</span>
+        </div>
 
-          <button
-            onClick={() => openMail("Hi Narendran — Let's Connect")}
-            style={{ display: "inline-block", padding: "1rem 3rem", background: ACCENT, borderRadius: 999, color: "#0A0A0A", fontWeight: 700, fontSize: "1rem", cursor: "pointer", letterSpacing: "0.05em", marginBottom: "2.5rem", transition: "all 0.3s", boxShadow: "0 0 40px rgba(249,115,22,0.35)", border: "none" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 60px rgba(249,115,22,0.55)"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 40px rgba(249,115,22,0.35)"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)"; }}
+        <h2
+          className="display"
+          style={{
+            fontSize: "clamp(2.6rem, 8vw, 7rem)",
+            fontWeight: 800,
+            lineHeight: 1.04,
+            letterSpacing: "-0.01em",
+            textTransform: "uppercase",
+            color: "#F2EEE3",
+            marginBottom: "3rem",
+          }}
+        >
+          {[
+            <>Have an <span className="serif" style={{ color: "#E8500A" }}>idea</span>?</>,
+            <>Let&apos;s <span className="serif" style={{ color: "#E8500A" }}>build</span> it.</>,
+          ].map((line, i) => (
+            <span key={i} style={{ display: "block", overflow: "hidden" }}>
+              <span
+                style={{
+                  display: "block",
+                  transform: vis ? "none" : "translateY(110%)",
+                  transition: `transform 1s ${EASE} ${0.1 + i * 0.15}s`,
+                }}
+              >
+                {line}
+              </span>
+            </span>
+          ))}
+        </h2>
+
+        <button
+          onClick={() => openMail()}
+          className="mono"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "1rem",
+            padding: "0.7rem 0.7rem 0.7rem 1.8rem",
+            borderRadius: 999,
+            border: "1px solid rgba(242,238,227,0.25)",
+            background: "transparent",
+            color: "#F2EEE3",
+            fontSize: "0.85rem",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            cursor: "pointer",
+            transition: `all 0.5s ${EASE}`,
+            marginBottom: "clamp(4rem, 8vw, 7rem)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#F2EEE3";
+            e.currentTarget.style.color = "#171310";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.color = "#F2EEE3";
+          }}
+        >
+          narendranlofficial@gmail.com
+          <span
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#E8500A",
+              color: "#F2EEE3",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1rem",
+            }}
           >
-            Say Hello →
-          </button>
+            ↗
+          </span>
+        </button>
 
-          <div style={{ display: "flex", gap: "1.5rem", justifyContent: "center", flexWrap: "wrap", marginBottom: isMobile ? "1.5rem" : 0 }}>
-            {links.map(l => (
-              l.href ? (
-                <a key={l.label} href={l.href} target={l.external ? "_blank" : undefined} rel="noopener noreferrer"
-                  style={{ color: MUTED, fontSize: "0.85rem", textDecoration: "none", transition: "color 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = ACCENT2)}
-                  onMouseLeave={e => (e.currentTarget.style.color = MUTED)}>
-                  {l.label}
-                </a>
-              ) : (
-                <button key={l.label} onClick={l.onClick}
-                  style={{ color: MUTED, fontSize: "0.85rem", background: "none", border: "none", cursor: "pointer", padding: 0, transition: "color 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = ACCENT2)}
-                  onMouseLeave={e => (e.currentTarget.style.color = MUTED)}>
-                  {l.label}
-                </button>
-              )
+        {/* Footer bar */}
+        <div
+          className="mono"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "1.25rem",
+            borderTop: "1px solid rgba(242,238,227,0.12)",
+            padding: "1.8rem 0",
+            fontSize: "0.65rem",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "rgba(242,238,227,0.4)",
+          }}
+        >
+          <span>© {new Date().getFullYear()} Narendran L</span>
+          <div style={{ display: "flex", gap: "1.75rem" }}>
+            {[
+              { label: "LinkedIn", href: "https://linkedin.com/in/narendran-l1125" },
+              { label: "GitHub", href: "https://github.com/Narendran-ds" },
+              { label: "Resume", href: "/Narendran_L_resume.pdf" },
+            ].map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "rgba(242,238,227,0.55)", textDecoration: "none", transition: "color 0.3s" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#E8500A")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(242,238,227,0.55)")}
+              >
+                {l.label}
+              </a>
             ))}
           </div>
-
-          {isMobile && (
-            <div style={{ marginTop: "0.5rem" }}>
-              <a href="tel:+917904047741"
-                style={{ color: ACCENT, fontSize: "1rem", textDecoration: "none", letterSpacing: "0.05em", fontWeight: 600 }}>
-                📞 +91 79040 47741
-              </a>
-            </div>
-          )}
+          <span>Chennai, IN — {time} IST</span>
         </div>
       </div>
     </section>
