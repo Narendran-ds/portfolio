@@ -59,7 +59,7 @@ export default function Contact() {
             color: "rgba(242,238,227,0.4)",
           }}
         >
-          <span style={{ color: "#E8500A" }}>( 06 )</span>
+          <span style={{ color: "#E8500A" }}>( 07 )</span>
           <span>Contact</span>
           <span>Open to SDE & ML roles</span>
         </div>

@@ -109,7 +109,7 @@ export default function TechStack() {
           justifyContent: "space-between",
         }}
       >
-        <span style={{ color: "var(--accent)" }}>( 05 )</span>
+        <span style={{ color: "var(--accent)" }}>( 06 )</span>
         <span>Stack</span>
         <span>Tools I reach for</span>
       </div>

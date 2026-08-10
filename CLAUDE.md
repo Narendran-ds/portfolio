@@ -54,9 +54,13 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   works one at a time (designed cover right, meta + one-liner + tag pills left). Links into the
   works system below.
 - `Experience.tsx` — section 04: Syncorb internship + B.Tech, split-grid ruled rows.
-- `TechStack.tsx` — section 05: two logo marquees (brand SVGs in `public/icons/`, downloaded
+- `Certifications.tsx` — section 05: static 2-col grid (not pinned — only a couple of
+  entries), designed covers via `CertificateCover.tsx` (same palette language as
+  `ProjectCover.tsx`, issuer instead of categories). Each card links straight to the
+  certificate PDF in `public/certificates/` (opens in a new tab) — no detail page.
+- `TechStack.tsx` — section 06: two logo marquees (brand SVGs in `public/icons/`, downloaded
   from cdn.simpleicons.org in ink #171310) + a static readable grouped-skills grid below.
-- `Contact.tsx` — section 06: dark (`#171310`) rounded-top footer, line-reveal headline, big
+- `Contact.tsx` — section 07: dark (`#171310`) rounded-top footer, line-reveal headline, big
   email pill button, live IST clock.
 - `CustomCursor.tsx` — reticle cursor; default state uses `mix-blend-mode: difference` so it
   self-inverts between dark hero and cream sections. Cards tagged `data-cursor="card"` get the
@@ -79,6 +83,13 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
 - Navbar takes a `solid` prop (true on subpages = always light-theme text) and "Work" links
   to `/works`; section links are `/#about`-style absolute paths.
 
+## Certifications (added third pass)
+
+- **`src/data/certificates.ts`** — same single-source-of-truth pattern as `projects.ts`:
+  slug, title, issuer, date, description, `file` (PDF path under `public/certificates/`),
+  cover `variant`/`mark`. Add new certificates here.
+- PDFs live in `public/certificates/`, named descriptively (not the original download names).
+
 ## Gotchas
 
 - **framer-motion `useTransform(value, fn)` memoizes `fn`** — closure state captured at first
@@ -99,5 +110,8 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   screenshots → designed minimal covers, alche-style works system (/works + detail pages),
   tech stack logos + static skills, hero name forced to one line, outdated "AI intern @
   Syncorb" hero line replaced (internship is completed — it's history in Experience only).
+- Aug 2026 (pass 3): added root `README.md`; added Certifications section (05) — Syncorb
+  internship completion + Cognizant Technoverse Hackathon 2026 certificates — pushing
+  TechStack/Contact to 06/07.
 - Note: running `npm run build` while the dev server is up corrupts `.next` — restart the
   dev server after production builds.
