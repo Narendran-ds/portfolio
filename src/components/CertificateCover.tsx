@@ -14,9 +14,11 @@ const VARIANTS = [
 export default function CertificateCover({
   certificate,
   index = 0,
+  compact = false,
 }: {
   certificate: Certificate;
   index?: number;
+  compact?: boolean;
 }) {
   const v = VARIANTS[certificate.variant % VARIANTS.length];
   const num = String(index + 1).padStart(2, "0");
@@ -31,7 +33,7 @@ export default function CertificateCover({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: "clamp(1.2rem, 2.5vw, 2.2rem)",
+        padding: compact ? "1.1rem 1.25rem" : "clamp(1.2rem, 2.5vw, 2.2rem)",
         userSelect: "none",
       }}
     >
@@ -51,7 +53,7 @@ export default function CertificateCover({
           position: "absolute",
           right: "-0.08em",
           bottom: "-0.24em",
-          fontSize: "clamp(9rem, 22vw, 20rem)",
+          fontSize: compact ? "7.5rem" : "clamp(9rem, 22vw, 20rem)",
           fontWeight: 900,
           lineHeight: 1,
           letterSpacing: "-0.04em",
@@ -63,17 +65,17 @@ export default function CertificateCover({
         {certificate.mark}
       </span>
 
-      <div className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: "0.66rem", letterSpacing: "0.2em", textTransform: "uppercase", color: v.dim, position: "relative" }}>
+      <div className="mono" style={{ display: "flex", justifyContent: "space-between", fontSize: compact ? "0.58rem" : "0.66rem", letterSpacing: "0.2em", textTransform: "uppercase", color: v.dim, position: "relative" }}>
         <span>{certificate.date}</span>
         <span style={{ color: v.accent }}>{num}</span>
       </div>
 
       <div style={{ position: "relative" }}>
-        <div style={{ width: 38, height: 6, background: v.accent, marginBottom: "1rem" }} />
+        <div style={{ width: compact ? 26 : 38, height: compact ? 4 : 6, background: v.accent, marginBottom: compact ? "0.6rem" : "1rem" }} />
         <div
           className="display"
           style={{
-            fontSize: "clamp(1.6rem, 3.2vw, 3rem)",
+            fontSize: compact ? "1.35rem" : "clamp(1.6rem, 3.2vw, 3rem)",
             fontWeight: 800,
             letterSpacing: "-0.02em",
             lineHeight: 1.02,
@@ -83,9 +85,11 @@ export default function CertificateCover({
         >
           {certificate.title}
         </div>
-        <div className="mono" style={{ marginTop: "0.9rem", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: v.dim }}>
-          [{certificate.issuer}]
-        </div>
+        {!compact && (
+          <div className="mono" style={{ marginTop: "0.9rem", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: v.dim }}>
+            [{certificate.issuer}]
+          </div>
+        )}
       </div>
     </div>
   );

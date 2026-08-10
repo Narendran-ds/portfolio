@@ -54,10 +54,10 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   works one at a time (designed cover right, meta + one-liner + tag pills left). Links into the
   works system below.
 - `Experience.tsx` — section 04: Syncorb internship + B.Tech, split-grid ruled rows.
-- `Certifications.tsx` — section 05: static 2-col grid (not pinned — only a couple of
-  entries), designed covers via `CertificateCover.tsx` (same palette language as
-  `ProjectCover.tsx`, issuer instead of categories). Each card links straight to the
-  certificate PDF in `public/certificates/` (opens in a new tab) — no detail page.
+- `Certifications.tsx` — section 05: **alche-style pinned showcase**, same mechanics as
+  `Projects.tsx` (own scroll listener + pin, not shared) — scroll flips through certificates
+  one at a time via `CertificateCover.tsx` (same palette language as `ProjectCover.tsx`,
+  issuer instead of categories). "View certificate" links into the certificates system below.
 - `TechStack.tsx` — section 06: two logo marquees (brand SVGs in `public/icons/`, downloaded
   from cdn.simpleicons.org in ink #171310) + a static readable grouped-skills grid below.
 - `Contact.tsx` — section 07: dark (`#171310`) rounded-top footer, line-reveal headline, big
@@ -83,11 +83,16 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
 - Navbar takes a `solid` prop (true on subpages = always light-theme text) and "Work" links
   to `/works`; section links are `/#about`-style absolute paths.
 
-## Certifications (added third pass)
+## Certifications system (added third pass)
 
 - **`src/data/certificates.ts`** — same single-source-of-truth pattern as `projects.ts`:
-  slug, title, issuer, date, description, `file` (PDF path under `public/certificates/`),
-  cover `variant`/`mark`. Add new certificates here.
+  slug, title, issuer, date, `oneLiner`, `story` paragraphs, `file` (PDF path under
+  `public/certificates/`), cover `variant`/`mark`, plus a `getCertificate(slug)` helper.
+  Add new certificates here — the pinned homepage showcase and detail pages derive from it.
+- **`/certificates/[slug]`** (`src/app/certificates/[slug]/page.tsx`) — SSG detail pages,
+  same layout as `/works/[slug]`: hero cover, "other certificates" rail, story paragraphs,
+  "View certificate" (opens PDF) + "Download PDF" buttons, next-certificate link.
+- Navbar has a "Certifications" link (`/#certifications`), alongside Work/About/Experience/Contact.
 - PDFs live in `public/certificates/`, named descriptively (not the original download names).
 
 ## Gotchas
@@ -101,6 +106,15 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
 - `.claude/skills/` holds 26 design/frontend skills copied from the old `E:\Nari\portfolio`
   project (high-end-visual-design, design-taste-frontend, impeccable, etc.). The redesign was
   calibrated against `high-end-visual-design`.
+- **Browser-automation screenshots: don't force `window.scrollTo()` against Lenis.** Lenis owns
+  the scroll position via its own rAF loop; a JS-forced jump fights it and produces a permanent
+  crossfade/ghosting artifact on the pinned showcases (two cards' text overlapping) in every
+  subsequent screenshot, no matter how long you wait. Use real wheel scroll (the `computer` tool's
+  `scroll` action) instead — Lenis handles that natively and settles cleanly.
+- **First 1-2 clicks after a fresh page navigation in dev mode can silently no-op** (nav link
+  clicks, etc.) — Next dev's on-demand compile/hydration isn't always done yet even after a short
+  wait. Not a real bug; if a click seems to do nothing right after `navigate`, retry once before
+  concluding something is broken.
 
 ## History
 
@@ -110,8 +124,11 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   screenshots → designed minimal covers, alche-style works system (/works + detail pages),
   tech stack logos + static skills, hero name forced to one line, outdated "AI intern @
   Syncorb" hero line replaced (internship is completed — it's history in Experience only).
-- Aug 2026 (pass 3): added root `README.md`; added Certifications section (05) — Syncorb
-  internship completion + Cognizant Technoverse Hackathon 2026 certificates — pushing
-  TechStack/Contact to 06/07.
+- Aug 2026 (pass 3): added root `README.md` (with live screenshots in `docs/screenshots/`);
+  added Certifications section (05) — Syncorb internship completion + Cognizant Technoverse
+  Hackathon 2026 certificates, pushing TechStack/Contact to 06/07. Rebuilt as a full alche-style
+  pinned showcase mirroring `Projects.tsx` (initial static-grid version was reworked per
+  feedback), with `/certificates/[slug]` detail pages mirroring `/works/[slug]`, and a
+  "Certifications" Navbar link.
 - Note: running `npm run build` while the dev server is up corrupts `.next` — restart the
   dev server after production builds.
