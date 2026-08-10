@@ -106,7 +106,7 @@ export default function Certifications() {
                 className="mono sweep-link"
                 style={{ fontSize: "0.72rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink)", textDecoration: "none" }}
               >
-                View certificate →
+                Know more →
               </Link>
             </div>
 

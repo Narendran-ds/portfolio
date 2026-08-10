@@ -51,6 +51,9 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   "L" + small location tag (left), plain uppercase mono links with no background chips
   (center-right), dark "N" avatar badge + Resume link + Hire me button (right). Swaps
   light/dark text based on whether the viewport is still over the (dark) hero canvas.
+  **Also hides on scroll-down and reveals as an elevated floating card (background + shadow +
+  rounded corners) on scroll-up** — matches zipforgex.in exactly; stays flat/transparent only
+  within the first 80px of scroll. Applies on every page, including `solid` subpages.
 - `About.tsx` — section 01: staggered line-reveal statement, bio split with ruled stat rows.
 - `Skills.tsx` — section 02: four numbered capability rows (grid: index / display title / detail).
 - `Projects.tsx` — section 03: **alche-style pinned showcase** — scroll flips through featured
@@ -60,7 +63,9 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
 - `Certifications.tsx` — section 05: **alche-style pinned showcase**, same mechanics as
   `Projects.tsx` (own scroll listener + pin, not shared) — scroll flips through certificates
   one at a time via `CertificateCover.tsx` (same palette language as `ProjectCover.tsx`,
-  issuer instead of categories). "View certificate" links into the certificates system below.
+  issuer instead of categories). "Know more →" links into the certificates system below
+  (mirrors Projects' "View project →" — the actual "View certificate" CTA lives on the detail
+  page, not the pinned card).
 - `TechStack.tsx` — section 06: two logo marquees (brand SVGs in `public/icons/`, downloaded
   from cdn.simpleicons.org in ink #171310) + a static readable grouped-skills grid below.
 - `Contact.tsx` — section 07: dark (`#171310`) rounded-top footer, line-reveal headline, big
@@ -94,8 +99,13 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   Add new certificates here — the pinned homepage showcase and detail pages derive from it.
 - **`/certificates/[slug]`** (`src/app/certificates/[slug]/page.tsx`) — SSG detail pages,
   same layout as `/works/[slug]`: hero cover, "other certificates" rail, story paragraphs,
+  optional Highlights facts-rail (mirrors Projects' highlights list — only Syncorb has one,
+  the Cognizant cert has no verifiable build specifics so it's omitted rather than invented),
   "View certificate" (opens PDF) + "Download PDF" buttons, next-certificate link.
-- Navbar has a "Certifications" link (`/#certifications`), alongside Work/About/Experience/Contact.
+- `oneLiner` copy is achievement-framed ("what I built"), not certificate-meta-framed — e.g.
+  "Built Gemini-powered data pipelines..." rather than "Certified for completing...".
+- Navbar has "Projects" (`/#work`) and "Certifications" (`/#certifications`) links, alongside
+  Work/About/Experience/Contact.
 - PDFs live in `public/certificates/`, named descriptively (not the original download names).
 
 ## Gotchas

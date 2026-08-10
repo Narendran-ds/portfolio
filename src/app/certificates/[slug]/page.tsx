@@ -92,6 +92,21 @@ export default function CertificateDetail({ params }: { params: { slug: string }
 
           {/* Facts rail */}
           <aside>
+            {c.highlights && (
+              <div style={{ borderTop: "1px solid var(--line)", paddingTop: "1.1rem", marginBottom: "2rem" }}>
+                <div className="mono" style={{ fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: "0.9rem" }}>
+                  Highlights
+                </div>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.7rem" }}>
+                  {c.highlights.map((h) => (
+                    <li key={h} style={{ display: "flex", gap: "0.7rem", fontSize: "0.9rem", color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                      <span style={{ color: "var(--accent)" }}>→</span> {h}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div style={{ borderTop: "1px solid var(--line)", paddingTop: "1.1rem" }}>
               <div className="mono" style={{ fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--ink-faint)", marginBottom: "0.9rem" }}>
                 Issued by

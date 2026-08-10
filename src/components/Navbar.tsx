@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
   { label: "Work", href: "/works" },
@@ -24,12 +24,29 @@ function openContact() {
 
 export default function Navbar({ solid = false }: { solid?: boolean }) {
   const [onCanvas, setOnCanvas] = useState(!solid);
+  const [hidden, setHidden] = useState(false);
+  const [elevated, setElevated] = useState(false);
+  const lastY = useRef(0);
 
   useEffect(() => {
-    if (solid) return;
     const onScroll = () => {
-      const canvasHeight = window.innerHeight * 7;
-      setOnCanvas(window.scrollY < canvasHeight - window.innerHeight);
+      const y = window.scrollY;
+      if (!solid) {
+        const canvasHeight = window.innerHeight * 7;
+        setOnCanvas(y < canvasHeight - window.innerHeight);
+      }
+      // zipforgex.in pattern: hide on scroll down, reveal with an elevated
+      // surface on scroll up; stay flat/transparent right at the top.
+      if (y < 80) {
+        setHidden(false);
+        setElevated(false);
+      } else if (y > lastY.current) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+        setElevated(true);
+      }
+      lastY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -41,7 +58,8 @@ export default function Navbar({ solid = false }: { solid?: boolean }) {
 
   return (
     <>
-      {/* Flat full-width bar — zipforgex.in style: no floating pill, no blur */}
+      {/* Flat full-width bar — zipforgex.in style: no pill at rest, hides on
+          scroll down, reappears as an elevated floating card on scroll up. */}
       <nav
         style={{
           position: "fixed",
@@ -53,6 +71,16 @@ export default function Navbar({ solid = false }: { solid?: boolean }) {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "1.6rem 4vw",
+          margin: elevated ? "0.8rem 1.1rem" : "0",
+          borderRadius: elevated ? "1.4rem" : "0",
+          background: elevated ? (onCanvas ? "rgba(23,19,16,0.92)" : "rgba(242,238,227,0.94)") : "transparent",
+          border: elevated ? `1px solid ${onCanvas ? "rgba(242,238,227,0.14)" : "rgba(23,19,16,0.1)"}` : "1px solid transparent",
+          backdropFilter: elevated ? "blur(16px)" : "none",
+          WebkitBackdropFilter: elevated ? "blur(16px)" : "none",
+          boxShadow: elevated ? "0 24px 60px -24px rgba(23,19,16,0.35)" : "none",
+          transform: hidden ? "translateY(-130%)" : "translateY(0)",
+          transition:
+            "transform 0.45s cubic-bezier(0.32,0.72,0,1), margin 0.45s cubic-bezier(0.32,0.72,0,1), border-radius 0.45s cubic-bezier(0.32,0.72,0,1), background 0.4s cubic-bezier(0.32,0.72,0,1), box-shadow 0.4s cubic-bezier(0.32,0.72,0,1)",
         }}
       >
         {/* Wordmark — left */}
