@@ -36,67 +36,69 @@ export default function Navbar({ solid = false }: { solid?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, [solid]);
 
-  const ink = onCanvas ? "rgba(242,238,227,0.92)" : "var(--ink)";
-  const inkSoft = onCanvas ? "rgba(242,238,227,0.6)" : "var(--ink-soft)";
+  const ink = onCanvas ? "rgba(242,238,227,0.94)" : "var(--ink)";
+  const inkSoft = onCanvas ? "rgba(242,238,227,0.62)" : "var(--ink-soft)";
 
   return (
     <>
-      {/* Wordmark — top left, outside the pill */}
-      <a
-        href="/"
-        className="mono"
-        style={{
-          position: "fixed",
-          top: "1.6rem",
-          left: "4vw",
-          zIndex: 110,
-          fontSize: "0.7rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: ink,
-          textDecoration: "none",
-          transition: "color 0.6s cubic-bezier(0.32,0.72,0,1)",
-          lineHeight: 1.5,
-        }}
-      >
-        Narendran L<br />
-        <span style={{ color: inkSoft }}>Chennai, IN</span>
-      </a>
-
-      {/* Island pill nav */}
+      {/* Flat full-width bar — zipforgex.in style: no floating pill, no blur */}
       <nav
         style={{
           position: "fixed",
-          top: "1.4rem",
-          left: "50%",
-          transform: "translateX(-50%)",
+          top: 0,
+          left: 0,
+          right: 0,
           zIndex: 110,
           display: "flex",
           alignItems: "center",
-          gap: "0.4rem",
-          padding: "0.4rem",
-          borderRadius: 999,
-          background: onCanvas ? "rgba(23,19,16,0.35)" : "rgba(242,238,227,0.75)",
-          border: `1px solid ${onCanvas ? "rgba(242,238,227,0.14)" : "rgba(23,19,16,0.12)"}`,
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          transition: "background 0.6s cubic-bezier(0.32,0.72,0,1), border-color 0.6s cubic-bezier(0.32,0.72,0,1)",
+          justifyContent: "space-between",
+          padding: "1.6rem 4vw",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }} className="nav-links">
+        {/* Wordmark — left */}
+        <a
+          href="/"
+          className="display"
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: "0.6rem",
+            fontSize: "1.1rem",
+            fontWeight: 800,
+            letterSpacing: "-0.01em",
+            color: ink,
+            textDecoration: "none",
+            transition: "color 0.6s cubic-bezier(0.32,0.72,0,1)",
+          }}
+        >
+          Narendran<span style={{ color: "#E8500A" }}>L</span>
+          <span
+            className="mono"
+            style={{
+              fontSize: "0.62rem",
+              fontWeight: 400,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: inkSoft,
+            }}
+          >
+            Chennai, IN
+          </span>
+        </a>
+
+        {/* Plain-text links — center-right */}
+        <div className="nav-links" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
           {links.map((l) => (
             <a
               key={l.label}
               href={l.href}
               className="mono"
               style={{
-                fontSize: "0.68rem",
-                letterSpacing: "0.14em",
+                fontSize: "0.7rem",
+                letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 color: inkSoft,
                 textDecoration: "none",
-                padding: "0.55rem 0.9rem",
-                borderRadius: 999,
                 transition: "color 0.3s cubic-bezier(0.32,0.72,0,1)",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#E8500A")}
@@ -107,62 +109,89 @@ export default function Navbar({ solid = false }: { solid?: boolean }) {
           ))}
         </div>
 
-        <button
-          onClick={openContact}
-          className="mono"
-          style={{
-            padding: "0.55rem 1.2rem",
-            borderRadius: 999,
-            border: "none",
-            background: "#E8500A",
-            color: "#F2EEE3",
-            fontSize: "0.68rem",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            transition: "transform 0.4s cubic-bezier(0.32,0.72,0,1), background 0.4s cubic-bezier(0.32,0.72,0,1)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "scale(1.04)";
-            e.currentTarget.style.background = "#171310";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.background = "#E8500A";
-          }}
-        >
-          Hire me
-        </button>
-      </nav>
+        {/* Avatar badge + resume + CTA — right */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1.2rem" }}>
+          <div
+            className="nav-avatar"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.6rem",
+            }}
+          >
+            <span
+              className="display"
+              aria-hidden
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                background: "#171310",
+                color: "#E8500A",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.8rem",
+                fontWeight: 800,
+                flexShrink: 0,
+              }}
+            >
+              N
+            </span>
+            <a
+              href="/Narendran_L_resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mono resume-link"
+              style={{
+                fontSize: "0.68rem",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: inkSoft,
+                textDecoration: "none",
+                transition: "color 0.4s cubic-bezier(0.32,0.72,0,1)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#E8500A")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = inkSoft)}
+            >
+              Resume ↗
+            </a>
+          </div>
 
-      {/* Resume — top right */}
-      <a
-        href="/Narendran_L_resume.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mono"
-        style={{
-          position: "fixed",
-          top: "1.9rem",
-          right: "4vw",
-          zIndex: 110,
-          fontSize: "0.7rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: inkSoft,
-          textDecoration: "none",
-          transition: "color 0.4s cubic-bezier(0.32,0.72,0,1)",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#E8500A")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = inkSoft)}
-      >
-        Resume ↗
-      </a>
+          <button
+            onClick={openContact}
+            className="mono"
+            style={{
+              padding: "0.6rem 1.2rem",
+              borderRadius: 999,
+              border: "none",
+              background: "#E8500A",
+              color: "#F2EEE3",
+              fontSize: "0.68rem",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              transition: "transform 0.4s cubic-bezier(0.32,0.72,0,1), background 0.4s cubic-bezier(0.32,0.72,0,1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.04)";
+              e.currentTarget.style.background = "#171310";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.background = "#E8500A";
+            }}
+          >
+            Hire me
+          </button>
+        </div>
+      </nav>
 
       <style>{`
         @media (max-width: 860px) {
           .nav-links { display: none !important; }
+          .nav-avatar .resume-link { display: none !important; }
         }
       `}</style>
     </>

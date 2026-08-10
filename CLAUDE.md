@@ -46,8 +46,11 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
 - `ScrollyCanvas.tsx` — **the scroll-driven video hero. Do not replace it.** 120 webp frames
   in `public/sequence/` drawn to canvas over a 700vh pin. Loads 10 frames eagerly then the rest.
   Cream editorial preloader (big % counter). Three overlay states fade in/out by scroll progress.
-- `Navbar.tsx` — floating island pill nav + fixed wordmark/resume links. Swaps light/dark text
-  based on whether the viewport is still over the (dark) hero canvas.
+- `Navbar.tsx` — **flat full-width bar, zipforgex.in style** (not a floating pill — reworked
+  Aug 2026 to match the user's own live product's navbar). One row: bold wordmark with accent
+  "L" + small location tag (left), plain uppercase mono links with no background chips
+  (center-right), dark "N" avatar badge + Resume link + Hire me button (right). Swaps
+  light/dark text based on whether the viewport is still over the (dark) hero canvas.
 - `About.tsx` — section 01: staggered line-reveal statement, bio split with ruled stat rows.
 - `Skills.tsx` — section 02: four numbered capability rows (grid: index / display title / detail).
 - `Projects.tsx` — section 03: **alche-style pinned showcase** — scroll flips through featured
@@ -128,7 +131,8 @@ Page composition in `src/app/page.tsx`, all sections in `src/components/`:
   added Certifications section (05) — Syncorb internship completion + Cognizant Technoverse
   Hackathon 2026 certificates, pushing TechStack/Contact to 06/07. Rebuilt as a full alche-style
   pinned showcase mirroring `Projects.tsx` (initial static-grid version was reworked per
-  feedback), with `/certificates/[slug]` detail pages mirroring `/works/[slug]`, and a
-  "Certifications" Navbar link.
+  feedback), with `/certificates/[slug]` detail pages mirroring `/works/[slug]`, and
+  "Projects"/"Certifications" Navbar links. Navbar itself rebuilt from a floating pill into
+  a flat full-width bar matching zipforgex.in (user's own product) at their request.
 - Note: running `npm run build` while the dev server is up corrupts `.next` — restart the
   dev server after production builds.
