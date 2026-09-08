@@ -18,6 +18,24 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "tracex",
+    title: "TraceX",
+    date: "2026 09",
+    categories: ["Full Stack", "Blockchain"],
+    tags: ["Python", "FastAPI", "React", "TypeScript", "SQLite", "Tailwind"],
+    oneLiner: "From a scam victim's wallet address to a confidence-scored, evidence-backed cash-out report — in under a second.",
+    story: [
+      "When someone loses money to a crypto scam, the investigating officer gets exactly one lead: a wallet address. From there they need to know where the money went and which exchange cashed it out — normally a manual, multi-hour trace through a block explorer that a scammer splitting funds across 300 addresses can make practically impossible.",
+      "TraceX automates that trail: a multi-hop transaction graph clusters hundreds of addresses down to a handful of actors, a seven-signal rule engine flags laundering patterns, and every ranked exchange exit comes with sourced evidence, not a guess. It's built for a legal case file, so it's a hand-tuned rule engine rather than a model — an investigator, and eventually a court, can interrogate exactly why it reached a conclusion. When a trail hits a cross-chain bridge it reports the dead end instead of inventing a destination.",
+      "Built for Smart India Hackathon 2026 (SIH26183, Blockchain & Cybersecurity, Ministry of Home Affairs) with 170+ backend tests and a labelled evaluation harness — 16/16 cases matched, 100% precision and recall, zero false positives.",
+    ],
+    highlights: ["100% precision/recall across 16 labelled cases, zero false positives", "Every flagged pattern traceable to source transaction hashes", "Built for Smart India Hackathon 2026 — SIH26183"],
+    github: "https://github.com/Narendran-ds/TraceX",
+    featured: true,
+    variant: 2,
+    mark: "TX",
+  },
+  {
     slug: "zipforgex",
     title: "ZipForgeX",
     date: "2025 08",
